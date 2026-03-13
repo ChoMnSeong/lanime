@@ -1,36 +1,54 @@
 package com.ensnif.lanime.global.config
 
+import com.ensnif.lanime.global.security.JwtTokenAuthenticationConverter
+import com.ensnif.lanime.global.security.JwtAuthenticationManager
+import com.ensnif.lanime.global.security.JwtAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.reactive.CorsConfigurationSource
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebFluxSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val authenticationManager: JwtAuthenticationManager,
+    private val authenticationConverter: JwtTokenAuthenticationConverter,
+    private val entryPoint: JwtAuthenticationEntryPoint
+) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
+        // JWT 필터 생성 및 설정
+        val authenticationWebFilter = AuthenticationWebFilter(authenticationManager)
+        authenticationWebFilter.setServerAuthenticationConverter(authenticationConverter)
+
         return http
-            .csrf { it.disable() } // REST API이므로 CSRF 비활성화
-            .cors { it.configurationSource(corsConfigurationSource()) } // CORS 설정 연결
-            .formLogin { it.disable() } // 기본 폼 로그인 비활성화
-            .httpBasic { it.disable() } // HTTP Basic 인증 비활성화
+            .csrf { it.disable() }
+            .cors { it.configurationSource(corsConfigurationSource()) }
+            .formLogin { it.disable() }
+            .httpBasic { it.disable() }
+            .exceptionHandling { handling ->
+                handling.authenticationEntryPoint(entryPoint)
+            }
             .authorizeExchange { exchange ->
                 exchange
-                    .pathMatchers("/api/v1/auth/**").permitAll() // 인증 관련은 모두 허용
-                    .pathMatchers("/api/v1/animations/**").permitAll() // 조회 서비스 허용
-                    .anyExchange().authenticated() // 나머지는 인증 필요
+                    .pathMatchers("/api/v1/auth/**").permitAll()
+                    .pathMatchers("/api/v1/animations/**").permitAll()
+                    .anyExchange().authenticated()
             }
+            // 핵심: 인증 필터를 AUTHENTICATION 단계에 추가합니다.
+            .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .build()
     }
 
