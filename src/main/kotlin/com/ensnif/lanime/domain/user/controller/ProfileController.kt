@@ -47,4 +47,22 @@ class ProfileController(
                 ))
             }
     }
+
+    /**
+     * 프로필 정보 수정
+     */
+    @PatchMapping("/self")
+    fun updateProfile(
+        // 필터에서 이미 이메일과 프로필ID를 검증해서 context에 넣어두었습니다.
+        @AuthenticationPrincipal context: UserProfileContext,
+        @RequestBody request: ProfileUpdateRequest
+    ): Mono<ApiResponse<Unit>> {
+        
+        // context에서 profileId를 추출 (null 체크 포함)
+        val profileId = context.profileId 
+            ?: throw BusinessException(ErrorCode.FORBIDDEN) // 또는 프로필 미선택 에러
+
+        return profileService.updateProfile(context.email, profileId, request)
+            .then(Mono.just(ApiResponse.success("프로필이 수정되었습니다.")))
+    }
 }

@@ -56,9 +56,8 @@ class SecurityConfig(
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
         
-        // 프론트엔드 주소 (개발 시 보통 3000이나 5173)
         configuration.allowedOriginPatterns = listOf("http://localhost:3000", "http://localhost:5173")
-        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true
         configuration.maxAge = 3600L
