@@ -1,0 +1,42 @@
+spring:
+    application:
+        name: lanime
+
+    # SQL 초기화 설정 (Flyway 대신 사용)
+    sql:
+        init:
+            mode: always
+            schema-locations: classpath:schema.sql # 여기에 우리가 만든 SQL 위치 지정
+
+    r2dbc:
+        url: r2dbc:postgresql://localhost:5432/lanime
+        username: ${DB_USERNAME} # 환경변수 처리
+        password: ${DB_PASSWORD} # 환경변수 처리
+
+    # 메일 서버 설정
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: ${MAIL_USERNAME} # 환경변수 처리
+        password: ${MAIL_PASSWORD} # 환경변수 처리 (구글 앱 비밀번호)
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+                        required: true
+                    connectiontimeout: 5000
+                    timeout: 5000
+                    writetimeout: 5000
+
+    # Valkey (Redis) 설정 (인증 코드 저장용)
+    data:
+        redis:
+            host: localhost
+            port: 6379
+
+jwt:
+    secret: ${JWT_SECRET} # 환경변수 처리
+    access-expiration: 21600000  # 6시간 (6 * 60 * 60 * 1000)
+    refresh-expiration: 86400000 # 1일 (24 * 60 * 60 * 1000)
