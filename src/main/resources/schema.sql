@@ -69,7 +69,7 @@ CREATE TABLE user_profile (
     profile_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES "user"(user_id) ON DELETE CASCADE,
     name VARCHAR(50) NOT NULL,
-    pin VARCHAR(255) NOT NULL,
+    pin VARCHAR(255),
     avatar_url TEXT,
     is_admin BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
