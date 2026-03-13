@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.bind.support.WebExchangeBindException
+import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Mono
 
 @RestControllerAdvice
@@ -33,14 +34,25 @@ class GlobalExceptionHandler {
         return Mono.just(ResponseEntity(response, HttpStatus.BAD_REQUEST))
     }
 
+@ExceptionHandler(ResponseStatusException::class)
+    protected fun handleResponseStatusException(e: ResponseStatusException): Mono<ResponseEntity<ErrorResponse>> {
+        val response = ErrorResponse(
+            status = e.statusCode.value(),
+            code = "HTTP_${e.statusCode.value()}",
+            message = e.reason ?: e.message
+        )
+        return Mono.just(ResponseEntity(response, e.statusCode))
+    }
+
     @ExceptionHandler(Exception::class)
     protected fun handleException(e: Exception): Mono<ResponseEntity<ErrorResponse>> {
         log.error("Unhandled Exception: ", e)
+        // 진짜 알 수 없는 런타임 에러만 500으로 처리
         val response = ErrorResponse(
             status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            code = "COMMON_500",
+            code = "HTTP_500",
             message = "서버 내부 오류가 발생했습니다."
         )
         return Mono.just(ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR))
     }
-}
+}   
