@@ -58,6 +58,20 @@ class ProfileController(
     /**
      * 프로필 정보 수정
      */
+    @PostMapping("")
+    fun createProfile(
+        // 필터에서 이미 이메일과 프로필ID를 검증해서 context에 넣어두었습니다.
+        @AuthenticationPrincipal context: UserProfileContext,
+        @RequestBody request: ProfileCreateRequest
+    ): Mono<ApiResponse<Unit>> {
+
+        return profileService.createProfile(context.email, request)
+            .then(Mono.just(ApiResponse.success("프로필이 추가되었습니다.")))
+    }
+
+    /**
+     * 프로필 정보 수정
+     */
     @PatchMapping("/self")
     fun updateProfile(
         // 필터에서 이미 이메일과 프로필ID를 검증해서 context에 넣어두었습니다.

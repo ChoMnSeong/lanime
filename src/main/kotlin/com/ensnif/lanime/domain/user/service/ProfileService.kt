@@ -1,6 +1,7 @@
 package com.ensnif.lanime.domain.user.service
 
 import com.ensnif.lanime.domain.user.entity.UserProfile
+import com.ensnif.lanime.domain.user.dto.request.ProfileCreateRequest
 import com.ensnif.lanime.domain.user.dto.request.ProfileUpdateRequest
 import com.ensnif.lanime.domain.user.dto.response.ProfileAccessResponse
 import com.ensnif.lanime.domain.user.repository.UserProfileRepository
@@ -44,6 +45,20 @@ class ProfileService(
                     ProfileAccessResponse(isPasswordRequired = true)
                 }
             }
+    }
+
+    @Transactional
+    fun createProfile(email: String, request: ProfileCreateRequest): Mono<Unit> {
+        return userRepository.findByEmail(email) // 1. 유저 찾기 (Mono<User>)
+            .flatMap { user -> 
+
+                userProfileRepository.save(UserProfile(
+                    userId = user.userId!!,
+                    name = request.nickname,
+                    avatarUrl = request.avatarUrl,
+                    pin = request.pin
+                ))
+            }.thenReturn(Unit)
     }
 
     @Transactional(readOnly = true)
