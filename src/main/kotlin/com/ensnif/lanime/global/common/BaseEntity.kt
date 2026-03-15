@@ -7,10 +7,8 @@ import java.time.LocalDateTime
 
 abstract class BaseEntity(
     @CreatedDate
-    @Column("created_at")
     var createdAt: LocalDateTime? = null,
 
     @LastModifiedDate
-    @Column("updated_at")
     var updatedAt: LocalDateTime? = null
 )

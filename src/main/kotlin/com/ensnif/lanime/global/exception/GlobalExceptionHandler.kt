@@ -34,7 +34,7 @@ class GlobalExceptionHandler {
         return Mono.just(ResponseEntity(response, HttpStatus.BAD_REQUEST))
     }
 
-@ExceptionHandler(ResponseStatusException::class)
+    @ExceptionHandler(ResponseStatusException::class)
     protected fun handleResponseStatusException(e: ResponseStatusException): Mono<ResponseEntity<ErrorResponse>> {
         val response = ErrorResponse(
             status = e.statusCode.value(),
