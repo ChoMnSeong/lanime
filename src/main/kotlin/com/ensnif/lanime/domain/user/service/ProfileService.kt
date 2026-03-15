@@ -11,7 +11,9 @@ import com.ensnif.lanime.global.security.JwtTokenProvider
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import reactor.core.publisher.Mono
+import reactor.core.publisher.Flux
 import java.util.UUID
 
 @Service
@@ -21,6 +23,14 @@ class ProfileService(
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder
 ) {
+
+    fun getUserProfiles(email: String): Flux<UserProfile> {
+        return userRepository.findByEmail(email) // 1. 유저 찾기 (Mono<User>)
+            .flatMapMany { user -> 
+                // 2. 찾은 유저의 ID로 프로필 목록 조회 (Flux<UserProfile>)
+                userProfileRepository.findAllByUserId(user.userId!!) 
+            }
+    }
 
     @Transactional(readOnly = true)
     fun checkProfileAccess(email: String, profileId: UUID): Mono<ProfileAccessResponse> {
