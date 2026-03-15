@@ -1,6 +1,7 @@
-package com.ensnif.lanime.global.security // 정확한 패키지 경로인지 확인하세요
+package com.ensnif.lanime.global.security
 
 import com.ensnif.lanime.global.context.UserProfileContext
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -13,38 +14,37 @@ class JwtAuthenticationManager(
 ) : ReactiveAuthenticationManager {
 
     override fun authenticate(authentication: Authentication): Mono<Authentication> {
-        // 필터에서 보낸 CustomAuthenticationToken이라고 가정하거나 
-        // credentials에 담긴 정보를 해석합니다.
+        // 1. 타입이 다르면 다른 매니저에게 기회를 주기 위해 empty (정상)
         val authToken = authentication as? JwtPreAuthenticationToken 
-            ?: return Mono.empty()
+            ?: return Mono.error(BadCredentialsException("토큰이 만료되었거나 유효하지 않습니다."))
 
         val accessToken = authToken.accessToken
         val profileToken = authToken.profileToken
 
-        // 1. AccessToken 검증 (필수)
+        // 2. 토큰 검증 및 에러 처리
+        // empty()가 아니라 error()를 던져야 EntryPoint가 호출됩니다.
         if (!tokenProvider.validateToken(accessToken)) {
-            return Mono.empty()
+            return Mono.error(BadCredentialsException("토큰이 만료되었거나 유효하지 않습니다."))
         }
 
-        val email = tokenProvider.getEmail(accessToken)
-        
-        // 2. ProfileToken 검증 및 추출 (선택)
-        val profileId = if (!profileToken.isNullOrBlank() && tokenProvider.validateToken(profileToken)) {
-            tokenProvider.getProfileId(profileToken)
-        } else {
-            null
-        }
+        return try {
+            val email = tokenProvider.getEmail(accessToken)
+            val profileId = if (!profileToken.isNullOrBlank() && tokenProvider.validateToken(profileToken)) {
+                tokenProvider.getProfileId(profileToken)
+            } else {
+                null
+            }
 
-        // 3. 통합 컨텍스트 생성
-        val context = UserProfileContext(email, profileId)
+            val context = UserProfileContext(email, profileId)
 
-        // 4. 최종 인증 객체 반환 (Principal 자리에 context를 넣음)
-        return Mono.just(
-            UsernamePasswordAuthenticationToken(
+            Mono.just(UsernamePasswordAuthenticationToken(
                 context, 
                 null, 
                 tokenProvider.getAuthorities(profileToken)
-            )
-        )
+            ))
+        } catch (e: Exception) {
+            // 토큰 파싱 중 발생하는 예외(만료 등) 처리
+            Mono.error(BadCredentialsException("인증 정보 처리 중 오류가 발생했습니다: ${e.message}"))
+        }
     }
 }

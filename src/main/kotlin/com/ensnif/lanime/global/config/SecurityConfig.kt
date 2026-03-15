@@ -15,6 +15,7 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.reactive.CorsConfigurationSource
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
+import org.springframework.security.web.server.authentication.ServerAuthenticationEntryPointFailureHandler
 
 @Configuration
 @EnableWebFluxSecurity
@@ -32,6 +33,10 @@ class SecurityConfig(
         // JWT 필터 생성 및 설정
         val authenticationWebFilter = AuthenticationWebFilter(authenticationManager)
         authenticationWebFilter.setServerAuthenticationConverter(authenticationConverter)
+
+        authenticationWebFilter.setAuthenticationFailureHandler(
+            ServerAuthenticationEntryPointFailureHandler(entryPoint)
+        )
 
         return http
             .csrf { it.disable() }
