@@ -53,13 +53,13 @@ class ProfileService(
     fun updateProfile(email: String, profileId: UUID, request: ProfileUpdateRequest): Mono<Unit> {
         return validateOwnerAndGetProfile(email, profileId)
             .flatMap { profile ->
-                // 변경된 값이 있을 때만 업데이트
-                val updatedProfile = profile.copy(
-                    name = request.name ?: profile.name,
-                    avatarUrl = request.avatarUrl ?: profile.avatarUrl,
-                    pin = request.pin?.let { passwordEncoder.encode(it) } ?: profile.pin
-                )
-                userProfileRepository.save(updatedProfile)
+
+                profile.name = request.name ?: profile.name
+                profile.avatarUrl = request.avatarUrl ?: profile.avatarUrl
+                profile.pin = request.pin?.let { passwordEncoder.encode(it) } ?: profile.pin
+
+                // 핵심: flatMap 내부에서 Mono를 반환해야 합니다.
+                userProfileRepository.save(profile)
             }
             .then(Mono.just(Unit))
     }
