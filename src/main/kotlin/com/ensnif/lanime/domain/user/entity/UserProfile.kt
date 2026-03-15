@@ -9,8 +9,8 @@ import java.util.UUID
 data class UserProfile(
     @Id val profileId: UUID? = null,
     val userId: UUID,
-    val pin: String? = null,
-    val name: String,
-    val avatarUrl: String? = null,
+    var pin: String? = null,
+    var name: String,
+    var avatarUrl: String? = null,
     val isAdmin: Boolean = false
 ) : BaseEntity()
