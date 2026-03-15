@@ -56,7 +56,7 @@ class ProfileService(
                     userId = user.userId!!,
                     name = request.nickname,
                     avatarUrl = request.avatarUrl,
-                    pin = request.pin
+                    pin = request.pin?.let { passwordEncoder.encode(it) }
                 ))
             }.thenReturn(Unit)
     }
