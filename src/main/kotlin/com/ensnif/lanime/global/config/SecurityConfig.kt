@@ -50,6 +50,8 @@ class SecurityConfig(
                 exchange
                     .pathMatchers("/api/v1/auth/**").permitAll()
                     .pathMatchers("/api/v1/animations/**").permitAll()
+                    .pathMatchers("/api/v1/images/upload").authenticated() // 업로드는 인증 필요
+                    .pathMatchers("/*.png", "/*.jpg", "/*.jpeg").permitAll() // 이미지는 누구나 조회 가능
                     .anyExchange().authenticated()
             }
             // 핵심: 인증 필터를 AUTHENTICATION 단계에 추가합니다.
