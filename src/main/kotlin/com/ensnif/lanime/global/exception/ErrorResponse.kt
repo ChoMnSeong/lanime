@@ -1,6 +1,6 @@
 package com.ensnif.lanime.global.exception
 
-import com.ensnif.lanime.global.common.BaseResponse
+import com.ensnif.lanime.global.common.dto.BaseResponse
 import com.fasterxml.jackson.annotation.JsonInclude
 
 data class ErrorResponse(

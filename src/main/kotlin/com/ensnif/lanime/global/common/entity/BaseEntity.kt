@@ -1,4 +1,4 @@
-package com.ensnif.lanime.global.common
+package com.ensnif.lanime.global.common.entity
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

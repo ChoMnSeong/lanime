@@ -1,4 +1,4 @@
-package com.ensnif.lanime.global.common
+package com.ensnif.lanime.global.common.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 

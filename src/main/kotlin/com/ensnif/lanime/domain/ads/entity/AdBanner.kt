@@ -1,6 +1,6 @@
 package com.ensnif.lanime.domain.ads.entity
 
-import com.ensnif.lanime.global.common.BaseEntity
+import com.ensnif.lanime.global.common.entity.BaseEntity
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID

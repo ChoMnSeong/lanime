@@ -1,6 +1,6 @@
 package com.ensnif.lanime.domain.user.controller
 
-import com.ensnif.lanime.global.common.ApiResponse
+import com.ensnif.lanime.global.common.dto.ApiResponse
 import com.ensnif.lanime.domain.user.dto.request.*
 import com.ensnif.lanime.domain.user.dto.response.*
 import com.ensnif.lanime.domain.user.service.AuthService
