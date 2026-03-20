@@ -21,8 +21,10 @@ class ProfileController(
 ) {
 
     @GetMapping("")
-    fun getUserProfiles(@AuthenticationPrincipal context: UserProfileContext): Flux<UserProfile> {
-        return profileService.getUserProfiles(context.email);
+    fun getUserProfiles(@AuthenticationPrincipal context: UserProfileContext): Mono<ApiResponse<List<UserProfile>>> {
+        return profileService.getUserProfiles(context.email)
+            .collectList() // Flux<UserProfile>를 Mono<List<UserProfile>>로 변환
+            .map { profiles -> ApiResponse.success(profiles) } // 리스트 전체를 딱 한 번 감쌈
     }
 
     /**
