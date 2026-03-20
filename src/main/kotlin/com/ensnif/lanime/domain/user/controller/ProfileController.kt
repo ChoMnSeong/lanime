@@ -66,7 +66,7 @@ class ProfileController(
     ): Mono<ApiResponse<Unit>> {
 
         return profileService.createProfile(context.email, request)
-            .then(Mono.just(ApiResponse.success("프로필이 추가되었습니다.")))
+            .then(Mono.just(ApiResponse.withMessage("프로필이 추가되었습니다.")))
     }
 
     /**
@@ -84,6 +84,6 @@ class ProfileController(
             ?: throw BusinessException(ErrorCode.FORBIDDEN) // 또는 프로필 미선택 에러
 
         return profileService.updateProfile(context.email, profileId, request)
-            .then(Mono.just(ApiResponse.success("프로필이 수정되었습니다.")))
+            .then(Mono.just(ApiResponse.withMessage("프로필이 수정되었습니다.")))
     }
 }

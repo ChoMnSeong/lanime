@@ -25,7 +25,7 @@ class AuthController(
     @PostMapping("/send-verification")
     fun sendVerification(@Valid @RequestBody request: VerificationSendRequest): Mono<ApiResponse<Unit>> {
         return authService.sendVerificationCode(request.email)
-            .thenReturn(ApiResponse.success("인증 번호가 이메일로 발송되었습니다."))
+            .thenReturn(ApiResponse.withMessage("인증 번호가 이메일로 발송되었습니다."))
     }
 
     // 코드 검증
@@ -39,7 +39,7 @@ class AuthController(
     @PostMapping("/signup")
     fun signup(@Valid @RequestBody request: SignupRequest): Mono<ApiResponse<Unit>> {
         return authService.signup(request)
-            .thenReturn(ApiResponse.success("회원가입에 성공했습니다."))
+            .thenReturn(ApiResponse.withMessage("회원가입에 성공했습니다."))
     }
 
     @PostMapping("/signin")
