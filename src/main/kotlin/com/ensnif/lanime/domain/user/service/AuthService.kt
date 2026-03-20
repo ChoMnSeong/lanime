@@ -84,7 +84,7 @@ class AuthService(
                 userProfileRepository.save(UserProfile(
                     userId = savedUser.userId!!,
                     name = request.nickname,
-                    avatarUrl = "https://blog.kakaocdn.net/dna/1o4Al/btq4p3Nwo83/AAAAAAAAAAAAAAAAAAAAAHn23fSLJEhL91CajhMUqvYwvey8hve_EOS5SlxKHlEV/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1774969199&allow_ip=&allow_referer=&signature=7H4CeviAhBHzkKX1vdvtEzc0vdo%3D",
+                    avatarUrl = "http://localhost:8080/aedd1086-948a-4f8b-b0c6-243b88cadab7.jpg",
                     isAdmin = true
                 ))
             }
