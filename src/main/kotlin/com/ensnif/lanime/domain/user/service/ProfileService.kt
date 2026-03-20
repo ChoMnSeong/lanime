@@ -29,7 +29,7 @@ class ProfileService(
         return userRepository.findByEmail(email) // 1. 유저 찾기 (Mono<User>)
             .flatMapMany { user -> 
                 // 2. 찾은 유저의 ID로 프로필 목록 조회 (Flux<UserProfile>)
-                userProfileRepository.findAllByUserId(user.userId!!) 
+                userProfileRepository.findAllByUserIdOrderByCreatedAtAsc(user.userId!!) 
             }
     }
 

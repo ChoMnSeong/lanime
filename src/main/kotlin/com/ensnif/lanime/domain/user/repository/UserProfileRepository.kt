@@ -8,5 +8,5 @@ import reactor.core.publisher.Flux
 
 @Repository
 interface UserProfileRepository : ReactiveCrudRepository<UserProfile, UUID> {
-    fun findAllByUserId(userId: UUID): Flux<UserProfile>
+    fun findAllByUserIdOrderByCreatedAtAsc(userId: UUID): Flux<UserProfile>
 }
