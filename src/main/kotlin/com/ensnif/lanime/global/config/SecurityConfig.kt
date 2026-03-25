@@ -49,6 +49,7 @@ class SecurityConfig(
             .authorizeExchange { exchange ->
                 exchange
                     .pathMatchers("/api/v1/auth/**").permitAll()
+                    .pathMatchers("/api/v1/ad").permitAll()
                     .pathMatchers("/api/v1/animations/**").permitAll()
                     .pathMatchers("/api/v1/images/upload").authenticated() // 업로드는 인증 필요
                     .pathMatchers("/*.png", "/*.jpg", "/*.jpeg").permitAll() // 이미지는 누구나 조회 가능
