@@ -28,6 +28,18 @@ class ProfileController(
     }
 
     /**
+     * 현재 선택된 프로필 정보 조회 (유저 토큰 + 프로필 토큰 필요)
+     */
+    @GetMapping("/self")
+    fun getMyProfile(@AuthenticationPrincipal context: UserProfileContext): Mono<ApiResponse<ProfileInfoResponse>> {
+        val profileId = context.profileId
+            ?: throw BusinessException(ErrorCode.FORBIDDEN)
+
+        return profileService.getMyProfile(context.email, profileId)
+            .map { ApiResponse.success(it) }
+    }
+
+    /**
      * 프로필 선택 시도 (PIN 필요 여부 체크)
      */
     @PostMapping("/{profileId}/access")

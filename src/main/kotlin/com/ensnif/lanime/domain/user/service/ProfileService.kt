@@ -4,6 +4,7 @@ import com.ensnif.lanime.domain.user.entity.UserProfile
 import com.ensnif.lanime.domain.user.dto.request.ProfileCreateRequest
 import com.ensnif.lanime.domain.user.dto.request.ProfileUpdateRequest
 import com.ensnif.lanime.domain.user.dto.response.ProfileAccessResponse
+import com.ensnif.lanime.domain.user.dto.response.ProfileInfoResponse
 import com.ensnif.lanime.domain.user.repository.UserProfileRepository
 import com.ensnif.lanime.domain.user.repository.UserRepository
 import com.ensnif.lanime.global.exception.BusinessException
@@ -87,6 +88,12 @@ class ProfileService(
                 userProfileRepository.save(profile)
             }
             .then(Mono.just(Unit))
+    }
+
+    @Transactional(readOnly = true)
+    fun getMyProfile(email: String, profileId: UUID): Mono<ProfileInfoResponse> {
+        return validateOwnerAndGetProfile(email, profileId)
+            .map { ProfileInfoResponse.from(it) }
     }
 
     /**
