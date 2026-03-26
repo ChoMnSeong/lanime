@@ -9,6 +9,5 @@ import java.util.UUID
 data class Genre(
     @Id
     val genreId: UUID? = null,
-    val name: String,   // 장르 명칭 (예: 판타지)
-    val slug: String    // URL용 영문 명칭 (예: fantasy)
+    val name: String
 ) : BaseEntity()

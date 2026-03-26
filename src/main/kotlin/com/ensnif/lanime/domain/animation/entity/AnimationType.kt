@@ -9,6 +9,5 @@ import java.util.UUID
 data class AnimationType(
     @Id
     val typeId: UUID? = null,
-    val name: String,         // 예: TV 시리즈, 극장판, OVA
-    val description: String?  // 타입에 대한 설명
+    val name: String
 ) : BaseEntity()

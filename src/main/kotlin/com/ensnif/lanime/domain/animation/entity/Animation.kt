@@ -9,10 +9,12 @@ import java.time.LocalDate
 @Table("animation")
 data class Animation(
     @Id val animationId: UUID? = null,
-    val typeId: UUID,           // ManyToOne: AnimationType 참조
+    val typeId: UUID,
     val title: String,
     val description: String?,
-    val rating: String,          // 연령 등급 (ALL, 15, 19)
-    val status: String,          // 방영 상태 (ONGOING, FINISHED)
+    val thumbnailUrl: String?,
+    val rating: String,
+    val status: String,
+    val airDay: String?,
     val releasedAt: LocalDate?
 ) : BaseEntity()

@@ -1,8 +1,9 @@
 ---
 -- 1. 기존 테이블 삭제 (외래키 제약 조건을 고려하여 역순 삭제)
 ---
+DROP TABLE IF EXISTS animation_review CASCADE;
 DROP TABLE IF EXISTS ad_banner CASCADE;
-DROP TABLE IF EXISTS animation_comment CASCADE;
+DROP TABLE IF EXISTS episode_comment CASCADE;
 DROP TABLE IF EXISTS user_watch_history CASCADE;
 DROP TABLE IF EXISTS user_animation_favorite CASCADE;
 DROP TABLE IF EXISTS episode CASCADE;
@@ -26,7 +27,6 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE animation_type (
     type_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(50) NOT NULL,
-    description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -35,7 +35,6 @@ CREATE TABLE animation_type (
 CREATE TABLE genre (
     genre_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(50) NOT NULL,
-    slug VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -85,8 +84,10 @@ CREATE TABLE animation (
     type_id UUID NOT NULL REFERENCES animation_type(type_id),
     title VARCHAR(255) NOT NULL,
     description TEXT,
+    thumbnail_url TEXT,
     rating VARCHAR(20), -- ALL, 15, 19
     status VARCHAR(20), -- ONGOING, FINISHED
+    air_day VARCHAR(10), -- MON, TUE, WED, THU, FRI, SAT, SUN
     released_at DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -134,13 +135,13 @@ CREATE TABLE user_watch_history (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 댓글 (대댓글 지원)
-CREATE TABLE animation_comment (
+-- 에피소드 댓글 (대댓글 지원)
+CREATE TABLE episode_comment (
     comment_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     episode_id UUID NOT NULL REFERENCES episode(episode_id) ON DELETE CASCADE,
     profile_id UUID NOT NULL REFERENCES user_profile(profile_id) ON DELETE CASCADE,
     content TEXT NOT NULL,
-    parent_comment_id UUID REFERENCES animation_comment(comment_id) ON DELETE SET NULL,
+    parent_comment_id UUID REFERENCES episode_comment(comment_id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -153,11 +154,22 @@ CREATE TABLE ad_banner (
     ad_banner_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
     image_url TEXT NOT NULL,
+    logo_image_url TEXT,
     link_url TEXT,
-    position VARCHAR(50), -- MAIN_TOP, SIDEBAR 등
     start_at TIMESTAMP,
     end_at TIMESTAMP,
     is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 애니메이션 통합 리뷰/평점
+CREATE TABLE animation_review (
+    review_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    animation_id UUID NOT NULL REFERENCES animation(animation_id) ON DELETE CASCADE,
+    profile_id UUID NOT NULL REFERENCES user_profile(profile_id) ON DELETE CASCADE,
+    score INT NOT NULL CHECK (score >= 1 AND score <= 5),
+    content TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
