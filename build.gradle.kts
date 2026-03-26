@@ -34,6 +34,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    implementation("com.sksamuel.scrimage:scrimage-core:4.1.1")
+    implementation("com.sksamuel.scrimage:scrimage-webp:4.1.1")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
