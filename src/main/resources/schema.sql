@@ -106,6 +106,8 @@ CREATE TABLE episode (
     animation_id UUID NOT NULL REFERENCES animation(animation_id) ON DELETE CASCADE,
     episode_number INT NOT NULL,
     title VARCHAR(255) NOT NULL,
+    thumbnail_url TEXT,
+    description TEXT,
     video_url TEXT NOT NULL,
     duration INT, -- 재생 시간(초)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
