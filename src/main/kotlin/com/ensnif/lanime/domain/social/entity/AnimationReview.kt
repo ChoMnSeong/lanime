@@ -10,6 +10,6 @@ data class AnimationReview(
     @Id val reviewId: UUID? = null,
     val animationId: UUID,
     val profileId: UUID,
-    val score: Int,
+    val score: Double,
     val content: String?
 ) : BaseEntity()

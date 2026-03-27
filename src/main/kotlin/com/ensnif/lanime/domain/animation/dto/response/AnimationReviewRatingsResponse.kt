@@ -8,14 +8,14 @@ data class AnimationReviewRatingsResponse(
 )
 
 data class RatingCount(
-    val rating: Int,
+    val rating: Double,
     val count: Long
 )
 
 data class Review(
     val reviewId: String,
     val profileId: String,
-    val rating: Int,
+    val rating: Double,
     val comment: String,
     val createdAt: String,
     val updateAt: String,

@@ -170,7 +170,7 @@ CREATE TABLE animation_review (
     review_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     animation_id UUID NOT NULL REFERENCES animation(animation_id) ON DELETE CASCADE,
     profile_id UUID NOT NULL REFERENCES user_profile(profile_id) ON DELETE CASCADE,
-    score INT NOT NULL CHECK (score >= 1 AND score <= 5),
+    score DECIMAL(3,1) NOT NULL CHECK (score >= 0.5 AND score <= 5.0 AND score * 2 = FLOOR(score * 2)),
     content TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
