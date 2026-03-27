@@ -15,5 +15,9 @@ enum class ErrorCode(val status: HttpStatus, val code: String, val message: Stri
     EMAIL_NOT_VERIFIED(HttpStatus.FORBIDDEN, "U003", "이메일 인증이 완료되지 않았습니다."),
     
     // 애니메이션 관련
-    ANIMATION_NOT_FOUND(HttpStatus.NOT_FOUND, "A001", "해당 애니메이션 정보를 찾을 수 없습니다.")
+    ANIMATION_NOT_FOUND(HttpStatus.NOT_FOUND, "A001", "해당 애니메이션 정보를 찾을 수 없습니다."),
+
+    // 리뷰 관련
+    REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "R001", "이미 리뷰를 작성하셨습니다."),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R002", "작성된 리뷰를 찾을 수 없습니다.")
 }
