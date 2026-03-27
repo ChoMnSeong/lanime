@@ -1,10 +1,11 @@
 package com.ensnif.lanime.domain.animation.service
 
 import com.ensnif.lanime.domain.animation.dto.response.*
+import com.ensnif.lanime.domain.social.dto.RatingCountResponse
+import com.ensnif.lanime.domain.social.dto.ReviewResponse
 import com.ensnif.lanime.domain.animation.repository.AnimationRepository
 import com.ensnif.lanime.domain.animation.repository.AnimationTypeRepository
 import com.ensnif.lanime.domain.animation.repository.GenreRepository
-import com.ensnif.lanime.domain.social.repository.ReviewQueryRepository
 import com.ensnif.lanime.domain.social.repository.ReviewRepository
 import com.ensnif.lanime.global.exception.BusinessException
 import com.ensnif.lanime.global.exception.ErrorCode
@@ -18,8 +19,7 @@ class AnimationService(
     private val animationRepository: AnimationRepository,
     private val animationTypeRepository: AnimationTypeRepository,
     private val genreRepository: GenreRepository,
-    private val reviewRepository: ReviewRepository,
-    private val reviewQueryRepository: ReviewQueryRepository
+    private val reviewRepository: ReviewRepository
 ) {
 
     fun getWeeklyAnimations(airDay: String?): Flux<AnimationListResponse> {
@@ -65,14 +65,20 @@ class AnimationService(
             }
     }
 
-    fun getAnimationRatings(animationId: UUID, page: Int, limit: Int): Mono<AnimationReviewRatingsResponse> {
+    fun getAnimationRatings(animationId: UUID, page: Int, limit: Int, profileId: UUID? = null): Mono<AnimationReviewRatingsResponse> {
         val offset = (page * limit).toLong()
 
+        val reviewsFlux = if (profileId != null) {
+            reviewRepository.findReviewsWithProfileFirst(animationId, profileId, limit, offset)
+        } else {
+            reviewRepository.findReviews(animationId, limit, offset)
+        }
+
         return Mono.zip(
-            reviewQueryRepository.findAverageScore(animationId),
+            reviewRepository.findAverageScore(animationId),
             reviewRepository.countByAnimationId(animationId),
-            reviewQueryRepository.countByRating(animationId).collectList(),
-            reviewQueryRepository.findReviewsWithProfile(animationId, limit, offset).collectList()
+            reviewRepository.countScoreByGroup(animationId).collectList(),
+            reviewsFlux.collectList()
         ).map { tuple ->
             AnimationReviewRatingsResponse(
                 averageRating = tuple.t1,
