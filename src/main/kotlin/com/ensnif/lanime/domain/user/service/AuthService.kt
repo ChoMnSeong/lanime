@@ -91,6 +91,39 @@ class AuthService(
             .thenReturn(Unit)
     }
 
+    /**
+     * 비밀번호 재설정 코드 발송
+     */
+    fun sendPasswordResetCode(email: String): Mono<Unit> {
+        return userRepository.existsByEmail(email)
+            .flatMap { exists ->
+                if (!exists) Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND))
+                else verificationService.saveResetToken(email)
+            }
+            .flatMap { token -> emailService.sendPasswordResetMail(email, token) }
+            .thenReturn(Unit)
+    }
+
+    /**
+     * 비밀번호 재설정
+     */
+    @Transactional
+    fun resetPassword(request: ResetPasswordRequest): Mono<Unit> {
+        return verificationService.verifyAndClearResetToken(request.email, request.token)
+            .flatMap { isValid ->
+                if (!isValid) Mono.error(BusinessException(ErrorCode.INVALID_INPUT_VALUE))
+                else userRepository.findByEmail(request.email)
+                    .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))
+            }
+            .flatMap { user ->
+                userRepository.save(
+                    user.copy(password = passwordEncoder.encode(request.newPassword)!!)
+                        .apply { createdAt = user.createdAt }
+                )
+            }
+            .thenReturn(Unit)
+    }
+
     fun signin(request: SigninRequest): Mono<AuthResponse> {
         return userRepository.findByEmail(request.email)
             .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))

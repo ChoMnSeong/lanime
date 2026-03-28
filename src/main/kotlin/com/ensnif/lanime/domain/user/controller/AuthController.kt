@@ -45,8 +45,22 @@ class AuthController(
     @PostMapping("/signin")
     fun signin(@Valid @RequestBody request: SigninRequest): Mono<ApiResponse<AuthResponse>> {
         return authService.signin(request)
-            .map { authResponse -> 
-                ApiResponse.success(authResponse) 
+            .map { authResponse ->
+                ApiResponse.success(authResponse)
             }
+    }
+
+    // 비밀번호 재설정 코드 발송
+    @PostMapping("/forgot-password")
+    fun forgotPassword(@Valid @RequestBody request: ForgotPasswordRequest): Mono<ApiResponse<Unit>> {
+        return authService.sendPasswordResetCode(request.email)
+            .thenReturn(ApiResponse.withMessage("비밀번호 재설정 코드가 이메일로 발송되었습니다."))
+    }
+
+    // 비밀번호 재설정
+    @PostMapping("/reset-password")
+    fun resetPassword(@Valid @RequestBody request: ResetPasswordRequest): Mono<ApiResponse<Unit>> {
+        return authService.resetPassword(request)
+            .thenReturn(ApiResponse.withMessage("비밀번호가 변경되었습니다."))
     }
 }
