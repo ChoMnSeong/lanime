@@ -1,8 +1,10 @@
 package com.ensnif.lanime.domain.animation.controller
 
+import com.ensnif.lanime.domain.animation.dto.RankingType
 import com.ensnif.lanime.domain.animation.dto.request.CreateReviewRequest
 import com.ensnif.lanime.domain.animation.dto.response.AnimationDetailResponse
 import com.ensnif.lanime.domain.animation.dto.response.AnimationListResponse
+import com.ensnif.lanime.domain.animation.dto.response.AnimationRankingResponse
 import com.ensnif.lanime.domain.animation.dto.response.AnimationReviewRatingsResponse
 import com.ensnif.lanime.domain.animation.service.AnimationService
 import com.ensnif.lanime.domain.episode.dto.EpisodeResponse
@@ -25,6 +27,15 @@ class AnimationController(
     private val reviewService: ReviewService,
     private val episodeService: EpisodeService
 ) {
+
+    @GetMapping("/rankings")
+    fun getAnimationRankings(
+        @RequestParam type: RankingType
+    ): Mono<ApiResponse<List<AnimationRankingResponse>>> {
+        return animationService.getAnimationRankings(type)
+            .collectList()
+            .map { ApiResponse.success(it) }
+    }
 
     @GetMapping("/weekly")
     fun getWeeklyAnimations(

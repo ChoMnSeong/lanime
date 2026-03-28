@@ -1,17 +1,19 @@
 package com.ensnif.lanime.domain.animation.service
 
+import com.ensnif.lanime.domain.animation.dto.RankingType
 import com.ensnif.lanime.domain.animation.dto.response.*
-import com.ensnif.lanime.domain.social.dto.RatingCountResponse
-import com.ensnif.lanime.domain.social.dto.ReviewResponse
 import com.ensnif.lanime.domain.animation.repository.AnimationRepository
 import com.ensnif.lanime.domain.animation.repository.AnimationTypeRepository
 import com.ensnif.lanime.domain.animation.repository.GenreRepository
+import com.ensnif.lanime.domain.social.dto.RatingCountResponse
+import com.ensnif.lanime.domain.social.dto.ReviewResponse
 import com.ensnif.lanime.domain.social.repository.ReviewRepository
 import com.ensnif.lanime.global.exception.BusinessException
 import com.ensnif.lanime.global.exception.ErrorCode
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.LocalDate
 import java.util.UUID
 
 @Service
@@ -63,6 +65,31 @@ class AnimationService(
                     )
                 }
             }
+    }
+
+    fun getAnimationRankings(type: RankingType): Flux<AnimationRankingResponse> {
+        val currentYear = LocalDate.now().year
+        val itemsFlux = when (type) {
+            RankingType.REALTIME -> animationRepository.findRealTimeRankings()
+            RankingType.Q1 -> animationRepository.findRankingsByYearAndQuarter(currentYear, 1)
+            RankingType.Q2 -> animationRepository.findRankingsByYearAndQuarter(currentYear, 2)
+            RankingType.Q3 -> animationRepository.findRankingsByYearAndQuarter(currentYear, 3)
+            RankingType.Q4 -> animationRepository.findRankingsByYearAndQuarter(currentYear, 4)
+            RankingType.LAST_YEAR -> animationRepository.findRankingsByYear(currentYear - 1)
+            RankingType.ALL -> animationRepository.findAllTimeRankings()
+        }
+        return itemsFlux.index().map { tuple ->
+            AnimationRankingResponse(
+                rank = tuple.t1 + 1,
+                id = tuple.t2.animationId.toString(),
+                title = tuple.t2.title,
+                thumbnailURL = tuple.t2.thumbnailUrl ?: "",
+                type = tuple.t2.type,
+                ageRating = tuple.t2.ageRating,
+                averageScore = tuple.t2.averageScore,
+                reviewCount = tuple.t2.reviewCount
+            )
+        }
     }
 
     fun getAnimationRatings(animationId: UUID, page: Int, limit: Int, profileId: UUID? = null): Mono<AnimationReviewRatingsResponse> {
