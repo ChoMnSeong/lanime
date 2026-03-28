@@ -1,0 +1,13 @@
+package com.ensnif.lanime.domain.animation.dto.response
+
+import java.util.UUID
+
+data class AnimationRankingItemResponse(
+    val animationId: UUID,
+    val title: String,
+    val thumbnailUrl: String?,
+    val type: String,
+    val ageRating: String,
+    val averageScore: Double,
+    val reviewCount: Long
+)
