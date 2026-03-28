@@ -4,7 +4,9 @@ import com.ensnif.lanime.global.common.dto.ApiResponse
 import com.ensnif.lanime.domain.user.dto.request.*
 import com.ensnif.lanime.domain.user.dto.response.*
 import com.ensnif.lanime.domain.user.service.AuthService
+import com.ensnif.lanime.global.context.UserProfileContext
 import jakarta.validation.Valid
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
