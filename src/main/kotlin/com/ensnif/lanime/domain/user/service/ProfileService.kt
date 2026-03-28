@@ -83,8 +83,12 @@ class ProfileService(
                     profile.copy(
                         name = request.name ?: profile.name,
                         avatarUrl = request.avatarUrl ?: profile.avatarUrl,
-                        pin = request.pin?.let { passwordEncoder.encode(it) } ?: profile.pin
-                    )
+                        pin = when {
+                            request.pin == null -> profile.pin
+                            request.pin.isBlank() -> null
+                            else -> passwordEncoder.encode(request.pin)
+                        }
+                    ).apply { createdAt = profile.createdAt }
                 )
             }
             .then(Mono.just(Unit))
