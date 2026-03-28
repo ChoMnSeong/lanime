@@ -65,4 +65,36 @@ class VerificationService(
         val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" // 템플릿 예시처럼 영문대문자+숫자 조합
         return (1..5).map { chars.random() }.joinToString("")
     }
+
+    // ─── 비밀번호 재설정 ───────────────────────────────────────────────────
+
+    private val RESET_PREFIX = "password-reset:"
+
+    /**
+     * 비밀번호 재설정 토큰 저장 (15분 TTL)
+     */
+    fun saveResetToken(email: String): Mono<String> {
+        val key = "$RESET_PREFIX$email"
+        val token = generateRandomCode()
+
+        return redisTemplate.opsForValue().set(key, token, Duration.ofMinutes(15))
+            .thenReturn(token)
+    }
+
+    /**
+     * 토큰 검증 후 삭제 (일치하면 true)
+     */
+    fun verifyAndClearResetToken(email: String, token: String): Mono<Boolean> {
+        val key = "$RESET_PREFIX$email"
+
+        return redisTemplate.opsForValue().get(key)
+            .flatMap { saved ->
+                if (saved == token) {
+                    redisTemplate.delete(key).thenReturn(true)
+                } else {
+                    Mono.just(false)
+                }
+            }
+            .defaultIfEmpty(false)
+    }
 }
