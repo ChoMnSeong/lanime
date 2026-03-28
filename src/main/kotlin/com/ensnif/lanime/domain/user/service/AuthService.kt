@@ -124,6 +124,62 @@ class AuthService(
             .thenReturn(Unit)
     }
 
+    @Transactional
+    fun deleteAccount(email: String): Mono<Unit> {
+        return userRepository.findByEmail(email)
+            .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))
+            .flatMap { user -> userRepository.deleteById(user.userId!!) }
+            .thenReturn(Unit)
+    }
+
+    fun sendEmailChangeVerification(newEmail: String): Mono<Unit> {
+        return userRepository.existsByEmail(newEmail)
+            .flatMap { exists ->
+                if (exists) Mono.error(BusinessException(ErrorCode.EMAIL_DUPLICATION))
+                else verificationService.saveCode(newEmail)
+            }
+            .flatMap { code -> emailService.sendVerificationMail(newEmail, code) }
+            .thenReturn(Unit)
+    }
+
+    @Transactional
+    fun updateEmail(email: String, newEmail: String, verificationCode: String): Mono<Unit> {
+        return verificationService.confirmAndClear(newEmail)
+            .flatMap { isVerified ->
+                if (!isVerified) Mono.error(BusinessException(ErrorCode.EMAIL_NOT_VERIFIED))
+                else userRepository.existsByEmail(newEmail)
+            }
+            .flatMap { exists ->
+                if (exists) Mono.error(BusinessException(ErrorCode.EMAIL_DUPLICATION))
+                else userRepository.findByEmail(email)
+                    .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))
+            }
+            .flatMap { user ->
+                userRepository.save(
+                    user.copy(email = newEmail)
+                        .apply { createdAt = user.createdAt }
+                )
+            }
+            .thenReturn(Unit)
+    }
+
+    @Transactional
+    fun updatePassword(email: String, currentPassword: String, newPassword: String): Mono<Unit> {
+        return userRepository.findByEmail(email)
+            .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))
+            .flatMap { user ->
+                if (!passwordEncoder.matches(currentPassword, user.password)) {
+                    Mono.error(BusinessException(ErrorCode.INVALID_INPUT_VALUE))
+                } else {
+                    userRepository.save(
+                        user.copy(password = passwordEncoder.encode(newPassword)!!)
+                            .apply { createdAt = user.createdAt }
+                    )
+                }
+            }
+            .thenReturn(Unit)
+    }
+
     fun signin(request: SigninRequest): Mono<AuthResponse> {
         return userRepository.findByEmail(request.email)
             .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))
