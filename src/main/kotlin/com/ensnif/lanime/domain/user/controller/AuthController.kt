@@ -52,6 +52,43 @@ class AuthController(
             }
     }
 
+    // ─── 계정 관리 ────────────────────────────────────────────────────────
+
+    @DeleteMapping("/account")
+    fun deleteAccount(
+        @AuthenticationPrincipal context: UserProfileContext
+    ): Mono<ApiResponse<Unit>> {
+        return authService.deleteAccount(context.email)
+            .thenReturn(ApiResponse.withMessage("계정이 삭제되었습니다."))
+    }
+
+    @PostMapping("/account/email/send-verification")
+    fun sendEmailChangeVerification(
+        @AuthenticationPrincipal context: UserProfileContext,
+        @Valid @RequestBody request: VerificationSendRequest
+    ): Mono<ApiResponse<Unit>> {
+        return authService.sendEmailChangeVerification(request.email)
+            .thenReturn(ApiResponse.withMessage("인증 번호가 이메일로 발송되었습니다."))
+    }
+
+    @PatchMapping("/account/email")
+    fun updateEmail(
+        @AuthenticationPrincipal context: UserProfileContext,
+        @Valid @RequestBody request: AdminUpdateEmailRequest
+    ): Mono<ApiResponse<Unit>> {
+        return authService.updateEmail(context.email, request.newEmail, request.verificationCode)
+            .thenReturn(ApiResponse.withMessage("이메일이 변경되었습니다."))
+    }
+
+    @PatchMapping("/account/password")
+    fun updatePassword(
+        @AuthenticationPrincipal context: UserProfileContext,
+        @Valid @RequestBody request: AdminResetPasswordRequest
+    ): Mono<ApiResponse<Unit>> {
+        return authService.updatePassword(context.email, request.currentPassword, request.newPassword)
+            .thenReturn(ApiResponse.withMessage("비밀번호가 변경되었습니다."))
+    }
+
     // 비밀번호 재설정 코드 발송
     @PostMapping("/forgot-password")
     fun forgotPassword(@Valid @RequestBody request: ForgotPasswordRequest): Mono<ApiResponse<Unit>> {
