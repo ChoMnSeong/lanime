@@ -4,5 +4,6 @@ import java.util.UUID
 
 data class UserProfileContext(
     val email: String,
-    val profileId: UUID? = null
+    val profileId: UUID? = null,
+    val isAdmin: Boolean = false
 )

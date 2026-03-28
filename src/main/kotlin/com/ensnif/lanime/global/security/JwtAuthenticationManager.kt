@@ -34,8 +34,13 @@ class JwtAuthenticationManager(
             } else {
                 null
             }
+            val isAdmin = if (!profileToken.isNullOrBlank() && tokenProvider.validateToken(profileToken)) {
+                tokenProvider.getIsAdmin(profileToken)
+            } else {
+                false
+            }
 
-            val context = UserProfileContext(email, profileId)
+            val context = UserProfileContext(email, profileId, isAdmin)
 
             Mono.just(UsernamePasswordAuthenticationToken(
                 context, 

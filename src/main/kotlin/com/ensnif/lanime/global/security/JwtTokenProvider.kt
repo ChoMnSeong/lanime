@@ -99,6 +99,17 @@ class JwtTokenProvider(
     }
 
     /**
+     * 토큰에서 isAdmin 클레임 추출
+     */
+    fun getIsAdmin(token: String): Boolean {
+        return Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .payload["admin"] as? Boolean ?: false
+    }
+
+    /**
      * 토큰 유효성 검증
      */
     fun validateToken(token: String): Boolean {
