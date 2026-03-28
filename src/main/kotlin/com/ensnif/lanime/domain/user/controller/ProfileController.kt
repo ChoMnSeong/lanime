@@ -84,6 +84,18 @@ class ProfileController(
     }
 
     /**
+     * 프로필 삭제 (관리자 프로필 제외)
+     */
+    @DeleteMapping("/{profileId}")
+    fun deleteProfile(
+        @AuthenticationPrincipal context: UserProfileContext,
+        @PathVariable profileId: UUID
+    ): Mono<ApiResponse<Unit>> {
+        return profileService.deleteProfile(context.email, profileId, context.isAdmin)
+            .then(Mono.just(ApiResponse.withMessage("프로필이 삭제되었습니다.")))
+    }
+
+    /**
      * 프로필 정보 수정
      */
     @PatchMapping("/self")

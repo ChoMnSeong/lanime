@@ -100,6 +100,22 @@ class ProfileService(
             .map { ProfileInfoResponse.from(it) }
     }
 
+    @Transactional
+    fun deleteProfile(email: String, profileId: UUID, requesterIsAdmin: Boolean): Mono<Unit> {
+        if (!requesterIsAdmin) {
+            return Mono.error(BusinessException(ErrorCode.FORBIDDEN))
+        }
+        return validateOwnerAndGetProfile(email, profileId)
+            .flatMap { profile ->
+                if (profile.isAdmin) {
+                    Mono.error(BusinessException(ErrorCode.FORBIDDEN))
+                } else {
+                    userProfileRepository.deleteById(profileId)
+                }
+            }
+            .then(Mono.just(Unit))
+    }
+
     /**
      * 이메일을 통해 유저를 찾고, 프로필의 소유권을 검증하는 로직
      */
