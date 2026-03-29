@@ -37,7 +37,7 @@ class AnimationService(
                     AnimationListResponse(
                         id = animation.animationId.toString(),
                         title = animation.title,
-                        thumbnailURL = animation.thumbnailUrl ?: "",
+                        thumbnailUrl = animation.thumbnailUrl ?: "",
                         type = type.name,
                         ageRating = animation.rating
                     )
@@ -57,7 +57,7 @@ class AnimationService(
                         id = animation.animationId.toString(),
                         title = animation.title,
                         description = animation.description ?: "",
-                        thumbnailURL = animation.thumbnailUrl ?: "",
+                        thumbnailUrl = animation.thumbnailUrl ?: "",
                         type = tuple.t1.name,
                         genres = tuple.t2.map { it.name },
                         ageRating = animation.rating,
@@ -83,7 +83,7 @@ class AnimationService(
                 rank = tuple.t1 + 1,
                 id = tuple.t2.animationId.toString(),
                 title = tuple.t2.title,
-                thumbnailURL = tuple.t2.thumbnailUrl ?: "",
+                thumbnailUrl = tuple.t2.thumbnailUrl ?: "",
                 type = tuple.t2.type,
                 ageRating = tuple.t2.ageRating,
                 averageScore = tuple.t2.averageScore,

@@ -4,7 +4,7 @@ data class AnimationDetailResponse(
     val id: String,
     val title: String,
     val description: String,
-    val thumbnailURL: String,
+    val thumbnailUrl: String,
     val type: String,
     val genres: List<String>,
     val ageRating: String,
