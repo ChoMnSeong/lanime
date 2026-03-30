@@ -88,6 +88,18 @@ class AnimationController(
             .then(Mono.just(ApiResponse.withMessage("리뷰가 등록되었습니다.")))
     }
 
+    @DeleteMapping("/{animationId}/ratings")
+    fun deleteReview(
+        @PathVariable animationId: UUID,
+        @AuthenticationPrincipal context: UserProfileContext
+    ): Mono<ApiResponse<Unit>> {
+        val profileId = context.profileId
+            ?: throw BusinessException(ErrorCode.FORBIDDEN)
+
+        return reviewService.deleteReview(animationId, profileId)
+            .then(Mono.just(ApiResponse.withMessage("리뷰가 삭제되었습니다.")))
+    }
+
     @PatchMapping("/{animationId}/ratings")
     fun updateReview(
         @PathVariable animationId: UUID,

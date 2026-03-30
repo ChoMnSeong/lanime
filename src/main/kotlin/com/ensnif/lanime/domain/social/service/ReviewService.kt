@@ -38,6 +38,13 @@ class ReviewService(
             }
     }
 
+    fun deleteReview(animationId: UUID, profileId: UUID): Mono<Unit> {
+        return reviewRepository.findByAnimationIdAndProfileId(animationId, profileId)
+            .switchIfEmpty(Mono.error(BusinessException(ErrorCode.REVIEW_NOT_FOUND)))
+            .flatMap { review -> reviewRepository.deleteById(review.reviewId!!) }
+            .thenReturn(Unit)
+    }
+
     fun updateReview(animationId: UUID, profileId: UUID, request: CreateReviewRequest): Mono<Unit> {
         return reviewRepository.findByAnimationIdAndProfileId(animationId, profileId)
             .switchIfEmpty(Mono.error(BusinessException(ErrorCode.REVIEW_NOT_FOUND)))
