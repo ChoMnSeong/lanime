@@ -45,7 +45,8 @@ launch.json
 
 uploads/*
 
-resource/
 
-application.yml
-src/main/resources/
+# 환경변수 파일 (절대 커밋 금지)
+.env
+
+.workman/*
