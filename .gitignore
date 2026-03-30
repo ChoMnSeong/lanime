@@ -40,3 +40,12 @@ out/
 .kotlin
 
 launch.json
+
+.DS_Store
+
+uploads/*
+
+resource/
+
+application.yml
+src/main/resources/
