@@ -19,5 +19,8 @@ enum class ErrorCode(val status: HttpStatus, val code: String, val message: Stri
 
     // 리뷰 관련
     REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "R001", "이미 리뷰를 작성하셨습니다."),
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R002", "작성된 리뷰를 찾을 수 없습니다.")
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R002", "작성된 리뷰를 찾을 수 없습니다."),
+
+    // 댓글 관련
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C101", "댓글을 찾을 수 없습니다.")
 }
