@@ -1,0 +1,640 @@
+{
+  "info": {
+    "name": "Lanime API",
+    "description": "Lanime 프로젝트 API 명세서 기반 Postman Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "your_access_token_here",
+      "type": "string"
+    },
+    {
+      "key": "profileToken",
+      "value": "your_profile_token_here",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. 인증 (Auth)",
+      "item": [
+        {
+          "name": "이메일 중복 체크",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/check-email",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "check-email"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "인증 메일 발송",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/send-verification",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "send-verification"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "인증 코드 검증",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "verify-code"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"code\": \"123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "회원가입",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "signup"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password1!\",\n  \"nickname\": \"닉네임\"\n}"
+            }
+          }
+        },
+        {
+          "name": "로그인",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "signin"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password1!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "비밀번호 재설정 코드 발송",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "forgot-password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "비밀번호 재설정",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "reset-password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"token\": \"재설정토큰\",\n  \"newPassword\": \"NewPassword1!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "계정 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/account",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "account"]
+            }
+          }
+        },
+        {
+          "name": "이메일 변경 인증 발송",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/account/email/send-verification",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "account", "email", "send-verification"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newemail@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "이메일 변경",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/account/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "account", "email"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newEmail\": \"newemail@example.com\",\n  \"verificationCode\": \"123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "비밀번호 변경 (로그인 상태)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/account/password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "account", "password"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"OldPassword1!\",\n  \"newPassword\": \"NewPassword1!\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. 프로필 (Profile)",
+      "item": [
+        {
+          "name": "프로필 목록 조회",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles",
+              "host": ["{{baseUrl}}"],
+              "path": ["profiles"]
+            }
+          }
+        },
+        {
+          "name": "현재 프로필 정보 조회",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "X-Profile-Token", "value": "{{profileToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/self",
+              "host": ["{{baseUrl}}"],
+              "path": ["profiles", "self"]
+            }
+          }
+        },
+        {
+          "name": "프로필 선택 시도 (PIN 필요 여부 확인)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/:profileId/access",
+              "host": ["{{baseUrl}}"],
+              "path": ["profiles", ":profileId", "access"],
+              "variable": [{ "key": "profileId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "프로필 PIN 검증",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/:profileId/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["profiles", ":profileId", "verify"],
+              "variable": [{ "key": "profileId", "value": "uuid_here" }]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"pin\": \"1234\"\n}" }
+          }
+        },
+        {
+          "name": "프로필 생성",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles",
+              "host": ["{{baseUrl}}"],
+              "path": ["profiles"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"avatarUrl\": \"https://...\",\n  \"pin\": \"1234\",\n  \"nickname\": \"닉네임\"\n}"
+            }
+          }
+        },
+        {
+          "name": "프로필 수정",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "X-Profile-Token", "value": "{{profileToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/self",
+              "host": ["{{baseUrl}}"],
+              "path": ["profiles", "self"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"새닉네임\",\n  \"avatarUrl\": \"https://...\",\n  \"pin\": \"5678\"\n}"
+            }
+          }
+        },
+        {
+          "name": "프로필 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/:profileId",
+              "host": ["{{baseUrl}}"],
+              "path": ["profiles", ":profileId"],
+              "variable": [{ "key": "profileId", "value": "uuid_here" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. 애니메이션 (Animation)",
+      "item": [
+        {
+          "name": "애니메이션 랭킹 조회",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/animations/rankings?type=REALTIME",
+              "host": ["{{baseUrl}}"],
+              "path": ["animations", "rankings"],
+              "query": [{ "key": "type", "value": "REALTIME" }]
+            }
+          }
+        },
+        {
+          "name": "요일별 방영 애니메이션 조회",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/animations/weekly?airDay=MON",
+              "host": ["{{baseUrl}}"],
+              "path": ["animations", "weekly"],
+              "query": [{ "key": "airDay", "value": "MON" }]
+            }
+          }
+        },
+        {
+          "name": "애니메이션 상세 조회",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/animations/:animationId",
+              "host": ["{{baseUrl}}"],
+              "path": ["animations", ":animationId"],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "애니메이션 리뷰/평점 목록 조회",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "disabled": true
+              },
+              {
+                "key": "X-Profile-Token",
+                "value": "{{profileToken}}",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/animations/:animationId/ratings?page=0&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["animations", ":animationId", "ratings"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "limit", "value": "20" }
+              ],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "에피소드 목록 조회",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "disabled": true
+              },
+              {
+                "key": "X-Profile-Token",
+                "value": "{{profileToken}}",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/animations/:animationId/episodes",
+              "host": ["{{baseUrl}}"],
+              "path": ["animations", ":animationId", "episodes"],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "리뷰 작성",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "X-Profile-Token", "value": "{{profileToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/animations/:animationId/ratings",
+              "host": ["{{baseUrl}}"],
+              "path": ["animations", ":animationId", "ratings"],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4.5,\n  \"comment\": \"재밌어요!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "리뷰 수정",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "X-Profile-Token", "value": "{{profileToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/animations/:animationId/ratings",
+              "host": ["{{baseUrl}}"],
+              "path": ["animations", ":animationId", "ratings"],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 3.5,\n  \"comment\": \"다시 봤는데 그냥 그래요.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "리뷰 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "X-Profile-Token", "value": "{{profileToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/animations/:animationId/ratings",
+              "host": ["{{baseUrl}}"],
+              "path": ["animations", ":animationId", "ratings"],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. 에피소드 댓글 (Episode Comment)",
+      "item": [
+        {
+          "name": "댓글 작성",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "X-Profile-Token", "value": "{{profileToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/episodes/:episodeId/comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["episodes", ":episodeId", "comments"],
+              "variable": [{ "key": "episodeId", "value": "uuid_here" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"댓글 내용\",\n  \"parentCommentId\": null\n}"
+            }
+          }
+        },
+        {
+          "name": "댓글 목록 조회",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/episodes/:episodeId/comments?page=0&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["episodes", ":episodeId", "comments"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "limit", "value": "20" }
+              ],
+              "variable": [{ "key": "episodeId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "답글 목록 조회",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/episodes/:episodeId/comments/:commentId/replies",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "episodes",
+                ":episodeId",
+                "comments",
+                ":commentId",
+                "replies"
+              ],
+              "variable": [
+                { "key": "episodeId", "value": "uuid_here" },
+                { "key": "commentId", "value": "uuid_here" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "댓글 수정",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "X-Profile-Token", "value": "{{profileToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/episodes/:episodeId/comments/:commentId",
+              "host": ["{{baseUrl}}"],
+              "path": ["episodes", ":episodeId", "comments", ":commentId"],
+              "variable": [
+                { "key": "episodeId", "value": "uuid_here" },
+                { "key": "commentId", "value": "uuid_here" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"수정된 댓글 내용\"\n}"
+            }
+          }
+        },
+        {
+          "name": "댓글 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "X-Profile-Token", "value": "{{profileToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/episodes/:episodeId/comments/:commentId",
+              "host": ["{{baseUrl}}"],
+              "path": ["episodes", ":episodeId", "comments", ":commentId"],
+              "variable": [
+                { "key": "episodeId", "value": "uuid_here" },
+                { "key": "commentId", "value": "uuid_here" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. 광고 (Ad)",
+      "item": [
+        {
+          "name": "활성 광고 목록 조회",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ad",
+              "host": ["{{baseUrl}}"],
+              "path": ["ad"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. 이미지 (Image)",
+      "item": [
+        {
+          "name": "이미지 업로드",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/images/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["images", "upload"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
