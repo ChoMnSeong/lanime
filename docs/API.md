@@ -135,7 +135,36 @@
 
 ---
 
-### 1-5. 로그인
+### 1-5. 토큰 재발급
+
+**POST** `/auth/refresh`
+
+만료된 Access Token을 Refresh Token으로 재발급합니다.
+
+**Request Body**
+```json
+{
+  "refreshToken": "eyJ..."
+}
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "accessToken": "eyJ...",
+    "expiresIn": 21600,
+    "tokenType": "Bearer"
+  }
+}
+```
+
+> Refresh Token이 만료되었거나 유효하지 않으면 **401** 반환. Access Token을 Refresh Token으로 사용하면 **401** 반환.
+
+---
+
+### 1-6. 로그인
 
 **POST** `/auth/signin`
 
@@ -446,7 +475,35 @@
 
 ---
 
-### 2-7. 프로필 삭제
+### 2-7. 프로필 PIN 초기화
+
+**DELETE** `/profiles/{profileId}/pin`
+**인증 필요:** `Authorization`
+
+PIN을 잊어버렸을 때 계정 비밀번호로 본인 인증 후 PIN을 제거합니다. 초기화 후 `/profiles/{profileId}/access` 호출 시 PIN 없이 바로 입장할 수 있으며, 이후 프로필 수정에서 새 PIN을 설정할 수 있습니다.
+
+**Request Body**
+```json
+{
+  "password": "UserPassword1!"
+}
+```
+
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| password | String | O | 계정 비밀번호 (틀리면 400 반환) |
+
+**Response**
+```json
+{
+  "success": true,
+  "message": "PIN이 초기화되었습니다."
+}
+```
+
+---
+
+### 2-8. 프로필 삭제
 
 **DELETE** `/profiles/{profileId}`
 **인증 필요:** `Authorization`
@@ -855,6 +912,7 @@
 | Auth | POST | `/auth/send-verification` | - | 인증 메일 발송 |
 | Auth | POST | `/auth/verify-code` | - | 인증 코드 검증 |
 | Auth | POST | `/auth/signup` | - | 회원가입 |
+| Auth | POST | `/auth/refresh` | - | Access Token 재발급 |
 | Auth | POST | `/auth/signin` | - | 로그인 |
 | Auth | POST | `/auth/forgot-password` | - | 비밀번호 재설정 코드 발송 |
 | Auth | POST | `/auth/reset-password` | - | 비밀번호 재설정 |
@@ -868,6 +926,7 @@
 | Profile | POST | `/profiles/{profileId}/verify` | 유저 | PIN 검증 및 토큰 발급 |
 | Profile | POST | `/profiles` | 유저 | 프로필 생성 |
 | Profile | PATCH | `/profiles/self` | 유저+프로필 | 프로필 수정 |
+| Profile | DELETE | `/profiles/{profileId}/pin` | 유저 | 프로필 PIN 초기화 |
 | Profile | DELETE | `/profiles/{profileId}` | 유저 | 프로필 삭제 |
 | Animation | GET | `/animations/rankings` | - | 애니메이션 랭킹 조회 |
 | Animation | GET | `/animations/weekly` | - | 요일별 방영 목록 조회 |
