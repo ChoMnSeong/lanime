@@ -29,6 +29,7 @@ class JwtTokenProvider(
 
         return Jwts.builder()
             .subject(email)
+            .claim("type", "access")
             .issuedAt(now)
             .expiration(validity)
             .signWith(key)
@@ -44,10 +45,26 @@ class JwtTokenProvider(
 
         return Jwts.builder()
             .subject(email)
+            .claim("type", "refresh")
             .issuedAt(now)
             .expiration(validity)
             .signWith(key)
             .compact()
+    }
+
+    /**
+     * 토큰 타입 추출 ("access" | "refresh")
+     */
+    fun getTokenType(token: String): String? {
+        return try {
+            Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .payload["type"] as? String
+        } catch (e: Exception) {
+            null
+        }
     }
 
         /**
