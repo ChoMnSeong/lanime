@@ -101,6 +101,27 @@ class ProfileService(
     }
 
     @Transactional
+    fun resetPin(email: String, profileId: UUID, rawPassword: String): Mono<Unit> {
+        return userRepository.findByEmail(email)
+            .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))
+            .flatMap { user ->
+                if (!passwordEncoder.matches(rawPassword, user.password)) {
+                    Mono.error(BusinessException(ErrorCode.INVALID_INPUT_VALUE))
+                } else {
+                    userProfileRepository.findById(profileId)
+                        .filter { it.userId == user.userId }
+                        .switchIfEmpty(Mono.error(BusinessException(ErrorCode.FORBIDDEN)))
+                }
+            }
+            .flatMap { profile ->
+                userProfileRepository.save(
+                    profile.copy(pin = null).apply { createdAt = profile.createdAt }
+                )
+            }
+            .then(Mono.just(Unit))
+    }
+
+    @Transactional
     fun deleteProfile(email: String, profileId: UUID, requesterIsAdmin: Boolean): Mono<Unit> {
         if (!requesterIsAdmin) {
             return Mono.error(BusinessException(ErrorCode.FORBIDDEN))

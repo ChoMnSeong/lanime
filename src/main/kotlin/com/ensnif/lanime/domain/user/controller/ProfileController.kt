@@ -84,6 +84,19 @@ class ProfileController(
     }
 
     /**
+     * 프로필 PIN 초기화 (PIN을 잊어버렸을 때 - 계정 비밀번호 인증 필요)
+     */
+    @DeleteMapping("/{profileId}/pin")
+    fun resetPin(
+        @AuthenticationPrincipal context: UserProfileContext,
+        @PathVariable profileId: UUID,
+        @RequestBody request: ResetPinRequest
+    ): Mono<ApiResponse<Unit>> {
+        return profileService.resetPin(context.email, profileId, request.password)
+            .then(Mono.just(ApiResponse.withMessage("PIN이 초기화되었습니다.")))
+    }
+
+    /**
      * 프로필 삭제 (관리자 프로필 제외)
      */
     @DeleteMapping("/{profileId}")
