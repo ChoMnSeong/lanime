@@ -180,6 +180,25 @@ class AuthService(
             .thenReturn(Unit)
     }
 
+    fun refreshAccessToken(refreshToken: String): Mono<AuthResponse> {
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            return Mono.error(BusinessException(ErrorCode.UNAUTHORIZED))
+        }
+        if (jwtTokenProvider.getTokenType(refreshToken) != "refresh") {
+            return Mono.error(BusinessException(ErrorCode.UNAUTHORIZED))
+        }
+
+        val email = jwtTokenProvider.getEmail(refreshToken)
+        return userRepository.findByEmail(email)
+            .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))
+            .map {
+                AuthResponse(
+                    accessToken = jwtTokenProvider.createAccessToken(email),
+                    expiresIn = jwtTokenProvider.getExpirationSeconds()
+                )
+            }
+    }
+
     fun signin(request: SigninRequest): Mono<AuthResponse> {
         return userRepository.findByEmail(request.email)
             .switchIfEmpty(Mono.error(BusinessException(ErrorCode.USER_NOT_FOUND)))

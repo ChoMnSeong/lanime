@@ -44,6 +44,12 @@ class AuthController(
             .thenReturn(ApiResponse.withMessage("회원가입에 성공했습니다."))
     }
 
+    @PostMapping("/refresh")
+    fun refresh(@Valid @RequestBody request: RefreshTokenRequest): Mono<ApiResponse<AuthResponse>> {
+        return authService.refreshAccessToken(request.refreshToken)
+            .map { ApiResponse.success(it) }
+    }
+
     @PostMapping("/signin")
     fun signin(@Valid @RequestBody request: SigninRequest): Mono<ApiResponse<AuthResponse>> {
         return authService.signin(request)
