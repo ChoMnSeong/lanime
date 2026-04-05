@@ -5,6 +5,7 @@ import com.ensnif.lanime.global.security.JwtAuthenticationManager
 import com.ensnif.lanime.global.security.JwtAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -51,6 +52,11 @@ class SecurityConfig(
                     .pathMatchers("/api/v1/auth/**").permitAll()
                     .pathMatchers("/api/v1/ad").permitAll()
                     .pathMatchers("/api/v1/animations/**").permitAll()
+                    .pathMatchers("/api/v1/stream/**").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/api/v1/episodes/*/comments").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/api/v1/episodes/*/comments/*/replies").permitAll()
+                    .pathMatchers("/api/v1/admin/auth/**").permitAll()
+                    .pathMatchers("/api/v1/admin/**").authenticated()
                     .pathMatchers("/api/v1/images/upload").authenticated()
                     .pathMatchers("/*.png", "/*.jpg", "/*.jpeg", "/*.webp").permitAll()
                     .anyExchange().authenticated()
@@ -64,7 +70,7 @@ class SecurityConfig(
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
         
-        configuration.allowedOriginPatterns = listOf("http://localhost:3000", "http://localhost:5173")
+        configuration.allowedOriginPatterns = listOf("http://localhost:5174", "http://localhost:5173")
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true
