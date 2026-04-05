@@ -29,15 +29,12 @@ class JwtAuthenticationManager(
 
         return try {
             val email = tokenProvider.getEmail(accessToken)
-            val profileId = if (!profileToken.isNullOrBlank() && tokenProvider.validateToken(profileToken)) {
+            val isAdmin = tokenProvider.getTokenType(accessToken) == "admin"
+
+            val profileId = if (!isAdmin && !profileToken.isNullOrBlank() && tokenProvider.validateToken(profileToken)) {
                 tokenProvider.getProfileId(profileToken)
             } else {
                 null
-            }
-            val isAdmin = if (!profileToken.isNullOrBlank() && tokenProvider.validateToken(profileToken)) {
-                tokenProvider.getIsAdmin(profileToken)
-            } else {
-                false
             }
 
             val context = UserProfileContext(email, profileId, isAdmin)

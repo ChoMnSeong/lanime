@@ -68,16 +68,44 @@ class JwtTokenProvider(
     }
 
         /**
-     * Refresh Token 생성
+     * 관리자 전용 Access Token 생성 (type: "admin")
      */
-    fun createProfileToken(email: String, profileId: UUID, isAdmin: Boolean): String {
+    fun createAdminToken(email: String, adminId: UUID): String {
         val now = Date()
-        
+        val validity = Date(now.time + accessExpiration)
+
+        return Jwts.builder()
+            .subject(email)
+            .claim("type", "admin")
+            .claim("aid", adminId.toString())
+            .issuedAt(now)
+            .expiration(validity)
+            .signWith(key)
+            .compact()
+    }
+
+    /**
+     * 관리자 토큰에서 adminId 추출
+     */
+    fun getAdminId(token: String): UUID {
+        val aid = Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .payload["aid"] as String
+        return UUID.fromString(aid)
+    }
+
+    /**
+     * 프로필 토큰 생성
+     */
+    fun createProfileToken(email: String, profileId: UUID): String {
+        val now = Date()
+
         return Jwts.builder()
             .subject(email)
             .claim("pid", profileId.toString())
-            .claim("admin", isAdmin) // Boolean 값 그대로 저장
-            .issuedAt(Date())
+            .issuedAt(now)
             .signWith(key)
             .compact()
     }
@@ -113,17 +141,6 @@ class JwtTokenProvider(
             .parseSignedClaims(token)
             .payload["pid"] as String
         return UUID.fromString(pidString)
-    }
-
-    /**
-     * 토큰에서 isAdmin 클레임 추출
-     */
-    fun getIsAdmin(token: String): Boolean {
-        return Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .payload["admin"] as? Boolean ?: false
     }
 
     /**
