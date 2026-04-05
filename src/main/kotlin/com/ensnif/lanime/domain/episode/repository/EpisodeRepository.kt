@@ -10,7 +10,8 @@ import java.util.UUID
 interface EpisodeRepository : ReactiveCrudRepository<Episode, UUID> {
 
     @Query("""
-        SELECT e.episode_id, e.episode_number, e.title, e.thumbnail_url, e.description, e.video_url, e.duration,
+        SELECT e.episode_id, e.episode_number, e.title, e.thumbnail_url, e.description,
+               e.video_url, e.duration, e.hls_path, e.encoding_status,
                0 AS last_watched_second, false AS is_finished
         FROM episode e
         WHERE e.animation_id = :animationId
@@ -19,7 +20,8 @@ interface EpisodeRepository : ReactiveCrudRepository<Episode, UUID> {
     fun findAllByAnimationId(animationId: UUID): Flux<EpisodeResponse>
 
     @Query("""
-        SELECT e.episode_id, e.episode_number, e.title, e.thumbnail_url, e.description, e.video_url, e.duration,
+        SELECT e.episode_id, e.episode_number, e.title, e.thumbnail_url, e.description,
+               e.video_url, e.duration, e.hls_path, e.encoding_status,
                COALESCE(wh.last_watched_second, 0) AS last_watched_second,
                COALESCE(wh.is_finished, false) AS is_finished
         FROM episode e

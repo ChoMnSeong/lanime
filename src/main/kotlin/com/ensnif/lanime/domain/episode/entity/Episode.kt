@@ -13,6 +13,8 @@ data class Episode(
     val title: String,
     val thumbnailUrl: String?,
     val description: String?,
-    val videoUrl: String,
-    val duration: Int?
+    val videoUrl: String?,
+    val duration: Int?,
+    val hlsPath: String? = null,
+    val encodingStatus: EncodingStatus = EncodingStatus.PENDING
 ) : BaseEntity()
