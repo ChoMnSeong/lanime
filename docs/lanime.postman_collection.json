@@ -19,6 +19,11 @@
       "key": "profileToken",
       "value": "your_profile_token_here",
       "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "your_admin_token_here",
+      "type": "string"
     }
   ],
   "item": [
@@ -37,7 +42,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+              "raw": "{\n  \"email\": \"user@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -53,7 +59,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+              "raw": "{\n  \"email\": \"user@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -69,7 +76,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\",\n  \"code\": \"123456\"\n}"
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"code\": \"123456\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -85,7 +93,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password1!\",\n  \"nickname\": \"닉네임\"\n}"
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password1!\",\n  \"nickname\": \"닉네임\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -101,7 +110,25 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password1!\"\n}"
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password1!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Access Token 재발급",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"eyJ...\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -117,7 +144,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+              "raw": "{\n  \"email\": \"user@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -133,7 +161,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"user@example.com\",\n  \"token\": \"재설정토큰\",\n  \"newPassword\": \"NewPassword1!\"\n}"
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"token\": \"재설정토큰\",\n  \"newPassword\": \"NewPassword1!\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -166,7 +195,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"newemail@example.com\"\n}"
+              "raw": "{\n  \"email\": \"newemail@example.com\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -185,7 +215,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"newEmail\": \"newemail@example.com\",\n  \"verificationCode\": \"123456\"\n}"
+              "raw": "{\n  \"newEmail\": \"newemail@example.com\",\n  \"verificationCode\": \"123456\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -204,7 +235,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"currentPassword\": \"OldPassword1!\",\n  \"newPassword\": \"NewPassword1!\"\n}"
+              "raw": "{\n  \"currentPassword\": \"OldPassword1!\",\n  \"newPassword\": \"NewPassword1!\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         }
@@ -271,7 +303,11 @@
               "path": ["profiles", ":profileId", "verify"],
               "variable": [{ "key": "profileId", "value": "uuid_here" }]
             },
-            "body": { "mode": "raw", "raw": "{\n  \"pin\": \"1234\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pin\": \"1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
           }
         },
         {
@@ -289,7 +325,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"avatarUrl\": \"https://...\",\n  \"pin\": \"1234\",\n  \"nickname\": \"닉네임\"\n}"
+              "raw": "{\n  \"avatarUrl\": \"https://...\",\n  \"pin\": \"1234\",\n  \"nickname\": \"닉네임\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -309,7 +346,29 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"새닉네임\",\n  \"avatarUrl\": \"https://...\",\n  \"pin\": \"5678\"\n}"
+              "raw": "{\n  \"name\": \"새닉네임\",\n  \"avatarUrl\": \"https://...\",\n  \"pin\": \"5678\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "프로필 PIN 초기화",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/:profileId/pin",
+              "host": ["{{baseUrl}}"],
+              "path": ["profiles", ":profileId", "pin"],
+              "variable": [{ "key": "profileId", "value": "uuid_here" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"UserPassword1!\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -342,20 +401,19 @@
               "raw": "{{baseUrl}}/animations/rankings?type=REALTIME",
               "host": ["{{baseUrl}}"],
               "path": ["animations", "rankings"],
-              "query": [{ "key": "type", "value": "REALTIME" }]
+              "query": [{ "key": "type", "value": "REALTIME", "description": "REALTIME | Q1 | Q2 | Q3 | Q4 | LAST_YEAR | ALL" }]
             }
           }
         },
         {
-          "name": "요일별 방영 애니메이션 조회",
+          "name": "요일별 방영 애니메이션 전체 조회",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/animations/weekly?airDay=MON",
+              "raw": "{{baseUrl}}/animations/weekly",
               "host": ["{{baseUrl}}"],
-              "path": ["animations", "weekly"],
-              "query": [{ "key": "airDay", "value": "MON" }]
+              "path": ["animations", "weekly"]
             }
           }
         },
@@ -441,7 +499,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"rating\": 4.5,\n  \"comment\": \"재밌어요!\"\n}"
+              "raw": "{\n  \"rating\": 4.5,\n  \"comment\": \"재밌어요!\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -462,7 +521,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"rating\": 3.5,\n  \"comment\": \"다시 봤는데 그냥 그래요.\"\n}"
+              "raw": "{\n  \"rating\": 3.5,\n  \"comment\": \"다시 봤는데 그냥 그래요.\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -504,7 +564,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"댓글 내용\",\n  \"parentCommentId\": null\n}"
+              "raw": "{\n  \"content\": \"댓글 내용\",\n  \"parentCommentId\": null\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -533,13 +594,7 @@
             "url": {
               "raw": "{{baseUrl}}/episodes/:episodeId/comments/:commentId/replies",
               "host": ["{{baseUrl}}"],
-              "path": [
-                "episodes",
-                ":episodeId",
-                "comments",
-                ":commentId",
-                "replies"
-              ],
+              "path": ["episodes", ":episodeId", "comments", ":commentId", "replies"],
               "variable": [
                 { "key": "episodeId", "value": "uuid_here" },
                 { "key": "commentId", "value": "uuid_here" }
@@ -567,7 +622,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"수정된 댓글 내용\"\n}"
+              "raw": "{\n  \"content\": \"수정된 댓글 내용\"\n}",
+              "options": { "raw": { "language": "json" } }
             }
           }
         },
@@ -616,7 +672,9 @@
           "name": "이미지 업로드",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
             "url": {
               "raw": "{{baseUrl}}/images/upload",
               "host": ["{{baseUrl}}"],
@@ -630,6 +688,265 @@
                   "type": "file",
                   "src": []
                 }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. 관리자 API (Admin)",
+      "item": [
+        {
+          "name": "관리자 로그인",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/auth/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "auth", "signin"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "관리자 목록 조회",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "accounts"]
+            }
+          }
+        },
+        {
+          "name": "관리자 계정 생성",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "accounts"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new-admin@example.com\",\n  \"password\": \"password123!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "관리자 계정 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/accounts/:adminId",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "accounts", ":adminId"],
+              "variable": [{ "key": "adminId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "애니메이션 생성",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/animations",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "animations"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"typeId\": \"uuid_here\",\n  \"title\": \"애니메이션 제목\",\n  \"description\": \"설명\",\n  \"thumbnailUrl\": \"https://...\",\n  \"rating\": \"ALL\",\n  \"status\": \"ONGOING\",\n  \"airDay\": \"Monday\",\n  \"releasedAt\": \"2024-01-01\",\n  \"genreIds\": [\"uuid1\", \"uuid2\"]\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "애니메이션 수정",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/animations/:animationId",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "animations", ":animationId"],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"수정된 제목\",\n  \"status\": \"FINISHED\",\n  \"genreIds\": [\"uuid1\"]\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "애니메이션 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/animations/:animationId",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "animations", ":animationId"],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "에피소드 생성",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/animations/:animationId/episodes",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "animations", ":animationId", "episodes"],
+              "variable": [{ "key": "animationId", "value": "uuid_here" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"episodeNumber\": 1,\n  \"title\": \"1화 제목\",\n  \"thumbnailUrl\": \"https://...\",\n  \"description\": \"에피소드 설명\",\n  \"duration\": 1440\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "에피소드 수정",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/episodes/:episodeId",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "episodes", ":episodeId"],
+              "variable": [{ "key": "episodeId", "value": "uuid_here" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"수정된 제목\",\n  \"description\": \"수정된 설명\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "에피소드 삭제",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/episodes/:episodeId",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "episodes", ":episodeId"],
+              "variable": [{ "key": "episodeId", "value": "uuid_here" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. 영상 업로드 및 스트리밍 (Video / Stream)",
+      "item": [
+        {
+          "name": "에피소드 영상 업로드 (관리자 전용)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/episodes/:episodeId/video",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "episodes", ":episodeId", "video"],
+              "variable": [{ "key": "episodeId", "value": "uuid_here" }]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [],
+                  "description": "업로드할 영상 파일 (mp4 권장)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "인코딩 상태 조회",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/episodes/:episodeId/encoding-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "episodes", ":episodeId", "encoding-status"],
+              "variable": [{ "key": "episodeId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "HLS 플레이리스트 조회 (스트리밍)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stream/:episodeId/index.m3u8",
+              "host": ["{{baseUrl}}"],
+              "path": ["stream", ":episodeId", "index.m3u8"],
+              "variable": [{ "key": "episodeId", "value": "uuid_here" }]
+            }
+          }
+        },
+        {
+          "name": "HLS 세그먼트 파일 조회",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stream/:episodeId/:segment.ts",
+              "host": ["{{baseUrl}}"],
+              "path": ["stream", ":episodeId", ":segment.ts"],
+              "variable": [
+                { "key": "episodeId", "value": "uuid_here" },
+                { "key": "segment", "value": "segment000" }
               ]
             }
           }
