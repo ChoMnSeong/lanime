@@ -7,14 +7,14 @@ data class ProfileInfoResponse(
     val profileId: UUID,
     val name: String,
     val avatarUrl: String?,
-    val isAdmin: Boolean
+    val isOwner: Boolean
 ) {
     companion object {
         fun from(profile: UserProfile) = ProfileInfoResponse(
             profileId = profile.profileId!!,
             name = profile.name,
             avatarUrl = profile.avatarUrl,
-            isAdmin = profile.isAdmin
+            isOwner = profile.isOwner
         )
     }
 }

@@ -12,5 +12,5 @@ data class UserProfile(
     val pin: String? = null,
     val name: String,
     val avatarUrl: String? = null,
-    val isAdmin: Boolean = false
+    val isOwner: Boolean = false
 ) : BaseEntity()

@@ -40,7 +40,7 @@ class ProfileService(
             .map { profile ->
                 if (profile.pin.isNullOrBlank()) {
                     // PIN 없으면 즉시 만료 없는 토큰 발급 (Subject는 email)
-                    val token = jwtTokenProvider.createProfileToken(email, profile.profileId!!, profile.isAdmin)
+                    val token = jwtTokenProvider.createProfileToken(email, profile.profileId!!)
                     ProfileAccessResponse(isPasswordRequired = false, profileToken = token)
                 } else {
                     ProfileAccessResponse(isPasswordRequired = true)
@@ -70,7 +70,7 @@ class ProfileService(
                     Mono.error(BusinessException(ErrorCode.INVALID_INPUT_VALUE))
                 } else {
                     // 검증 성공 시 영구 토큰 발급
-                    Mono.just(jwtTokenProvider.createProfileToken(email, profile.profileId!!, profile.isAdmin))
+                    Mono.just(jwtTokenProvider.createProfileToken(email, profile.profileId!!))
                 }
             }
     }
@@ -128,8 +128,8 @@ class ProfileService(
         }
         return validateOwnerAndGetProfile(email, profileId)
             .flatMap { profile ->
-                if (profile.isAdmin) {
-                    Mono.error(BusinessException(ErrorCode.FORBIDDEN))
+                if (profile.isOwner) {
+                    Mono.error(BusinessException(ErrorCode.OWNER_PROFILE_CANNOT_BE_DELETED))
                 } else {
                     userProfileRepository.deleteById(profileId)
                 }
