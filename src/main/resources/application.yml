@@ -53,6 +53,10 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
 
+  # 대용량 영상 업로드를 위한 코덱 버퍼 크기 설정
+  codec:
+    max-in-memory-size: 512MB
+
 # JWT 토큰 설정
 jwt:
   secret: ${JWT_SECRET}
