@@ -14,8 +14,7 @@ class AdService(private val adBannerRepository: AdBannerRepository) {
                 AdResponse(
                     id = banner.adBannerId.toString(),
                     webImageURL = banner.imageUrl,
-                    logoImageURL = banner.logoImageUrl,
-                    linkURL = banner.linkUrl
+                    logoImageURL = banner.logoImageUrl
                 )
             }
     }

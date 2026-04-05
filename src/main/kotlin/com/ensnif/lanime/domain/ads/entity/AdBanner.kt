@@ -13,7 +13,6 @@ data class AdBanner(
     val title: String,
     val imageUrl: String,
     val logoImageUrl: String?,
-    val linkUrl: String?,
     val startAt: LocalDateTime?,
     val endAt: LocalDateTime?,
     val isActive: Boolean = true
