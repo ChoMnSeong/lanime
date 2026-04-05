@@ -1,6 +1,9 @@
 package com.ensnif.lanime.domain.animation.repository
 
+import com.ensnif.lanime.domain.animation.dto.response.AnimationListItemResponse
+import com.ensnif.lanime.domain.animation.dto.response.AnimationListResponse
 import com.ensnif.lanime.domain.animation.dto.response.AnimationRankingItemResponse
+import com.ensnif.lanime.domain.animation.entity.AirDay
 import com.ensnif.lanime.domain.animation.entity.Animation
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
@@ -10,8 +13,18 @@ import java.util.UUID
 
 @Repository
 interface AnimationRepository : ReactiveCrudRepository<Animation, UUID> {
-    fun findAllByAirDay(airDay: String): Flux<Animation>
+    fun findAllByAirDay(airDay: AirDay): Flux<Animation>
     fun findAllByAirDayIsNotNull(): Flux<Animation>
+
+    @Query("""
+        SELECT a.animation_id, a.title, a.description, a.thumbnail_url, a.rating AS age_rating,
+               a.status, a.air_day, a.released_at,
+               at.name AS type
+        FROM animation a
+        JOIN animation_type at ON a.type_id = at.type_id
+        ORDER BY a.created_at DESC
+    """)
+    fun findAllDetailedAnimations(): Flux<AnimationListItemResponse>
 
     @Query("""
         SELECT a.animation_id, a.title, a.thumbnail_url, a.rating AS age_rating,

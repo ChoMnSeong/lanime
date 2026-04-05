@@ -1,7 +1,10 @@
 package com.ensnif.lanime.domain.animation.service
 
-import com.ensnif.lanime.domain.animation.dto.RankingType
 import com.ensnif.lanime.domain.animation.dto.response.*
+import com.ensnif.lanime.domain.animation.entity.AirDay
+import com.ensnif.lanime.domain.animation.entity.AnimationType
+import com.ensnif.lanime.domain.animation.entity.Genre
+import com.ensnif.lanime.domain.animation.entity.RankingType
 import com.ensnif.lanime.domain.animation.repository.AnimationRepository
 import com.ensnif.lanime.domain.animation.repository.AnimationTypeRepository
 import com.ensnif.lanime.domain.animation.repository.GenreRepository
@@ -24,25 +27,92 @@ class AnimationService(
     private val reviewRepository: ReviewRepository
 ) {
 
-    fun getWeeklyAnimations(airDay: String?): Flux<AnimationListResponse> {
-        val animations = if (airDay != null) {
-            animationRepository.findAllByAirDay(airDay)
-        } else {
-            animationRepository.findAllByAirDayIsNotNull()
-        }
+    fun getAllAnimations(): Flux<AnimationListResponse> {
+        return animationRepository.findAllDetailedAnimations()
+            .flatMap { item ->
+                genreRepository.findAllByAnimationId(item.animationId)
+                    .map { it.name }
+                    .collectList()
+                    .map { genres ->
+                        AnimationListResponse(
+                            id = item.animationId.toString(),
+                            title = item.title,
+                            description = item.description,
+                            thumbnailUrl = item.thumbnailUrl,
+                            type = item.type,
+                            genres = genres,
+                            ageRating = item.ageRating,
+                            status = item.status,
+                            airDay = item.airDay,
+                            releasedAt = item.releasedAt
+                        )
+                    }
+            }
+    }
 
-        return animations.flatMap { animation ->
-            animationTypeRepository.findById(animation.typeId)
-                .map { type ->
+    fun getAnimationTypes(): Flux<AnimationType> {
+        return animationTypeRepository.findAll()
+    }
+
+    fun getGenres(): Flux<Genre> {
+        return genreRepository.findAll()
+    }
+
+    fun getWeeklyAnimations(): Mono<Map<String, List<AnimationListResponse>>> {
+        val dayOrder = AirDay.entries.map { it.name }
+
+        return animationRepository.findAllByAirDayIsNotNull()
+            .flatMap { animation ->
+                Mono.zip(
+                    animationTypeRepository.findById(animation.typeId),
+                    genreRepository.findAllByAnimationId(animation.animationId!!).map { it.name }.collectList()
+                ).map { tuple ->
+                    val type = tuple.t1
+                    val genres = tuple.t2
+                    animation.airDay!!.name to AnimationListResponse(
+                        id = animation.animationId.toString(),
+                        title = animation.title,
+                        description = animation.description,
+                        thumbnailUrl = animation.thumbnailUrl,
+                        type = type.name,
+                        genres = genres,
+                        ageRating = animation.rating,
+                        status = animation.status,
+                        airDay = animation.airDay?.name,
+                        releasedAt = animation.releasedAt
+                    )
+                }
+            }
+            .collectList()
+            .map { pairs ->
+                val grouped = pairs.groupBy({ it.first }, { it.second })
+                dayOrder.associateWith { grouped[it] ?: emptyList() }
+            }
+    }
+
+    fun getAnimationsByAirDay(airDay: AirDay): Flux<AnimationListResponse> {
+        return animationRepository.findAllByAirDay(airDay)
+            .flatMap { animation ->
+                Mono.zip(
+                    animationTypeRepository.findById(animation.typeId),
+                    genreRepository.findAllByAnimationId(animation.animationId!!).map { it.name }.collectList()
+                ).map { tuple ->
+                    val type = tuple.t1
+                    val genres = tuple.t2
                     AnimationListResponse(
                         id = animation.animationId.toString(),
                         title = animation.title,
-                        thumbnailUrl = animation.thumbnailUrl ?: "",
+                        description = animation.description,
+                        thumbnailUrl = animation.thumbnailUrl,
                         type = type.name,
-                        ageRating = animation.rating
+                        genres = genres,
+                        ageRating = animation.rating,
+                        status = animation.status,
+                        airDay = animation.airDay?.name,
+                        releasedAt = animation.releasedAt
                     )
                 }
-        }
+            }
     }
 
     fun getAnimationDetail(animationId: UUID): Mono<AnimationDetailResponse> {
@@ -110,9 +180,9 @@ class AnimationService(
             AnimationReviewRatingsResponse(
                 averageRating = tuple.t1,
                 totalCount = tuple.t2,
-                ratingCounts = tuple.t3.map { RatingCount(it.rating, it.count) },
+                ratingCounts = tuple.t3.map { RatingCountItemResponse(it.rating, it.count) },
                 reviews = tuple.t4.map { row ->
-                    Review(
+                    ReviewItemResponse(
                         reviewId = row.reviewId.toString(),
                         profileId = row.profileId.toString(),
                         rating = row.score,

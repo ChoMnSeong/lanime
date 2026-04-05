@@ -1,11 +1,11 @@
 package com.ensnif.lanime.domain.animation.controller
 
-import com.ensnif.lanime.domain.animation.dto.RankingType
-import com.ensnif.lanime.domain.animation.dto.request.CreateReviewRequest
-import com.ensnif.lanime.domain.animation.dto.response.AnimationDetailResponse
-import com.ensnif.lanime.domain.animation.dto.response.AnimationListResponse
-import com.ensnif.lanime.domain.animation.dto.response.AnimationRankingResponse
-import com.ensnif.lanime.domain.animation.dto.response.AnimationReviewRatingsResponse
+import com.ensnif.lanime.domain.animation.dto.request.*
+import com.ensnif.lanime.domain.animation.dto.response.*
+import com.ensnif.lanime.domain.animation.entity.AirDay
+import com.ensnif.lanime.domain.animation.entity.AnimationType
+import com.ensnif.lanime.domain.animation.entity.Genre
+import com.ensnif.lanime.domain.animation.entity.RankingType
 import com.ensnif.lanime.domain.animation.service.AnimationService
 import com.ensnif.lanime.domain.episode.dto.EpisodeResponse
 import com.ensnif.lanime.domain.episode.service.EpisodeService
@@ -28,6 +28,27 @@ class AnimationController(
     private val episodeService: EpisodeService
 ) {
 
+    @GetMapping
+    fun getAllAnimations(): Mono<ApiResponse<List<AnimationListResponse>>> {
+        return animationService.getAllAnimations()
+            .collectList()
+            .map { ApiResponse.success(it) }
+    }
+
+    @GetMapping("/types")
+    fun getAnimationTypes(): Mono<ApiResponse<List<AnimationType>>> {
+        return animationService.getAnimationTypes()
+            .collectList()
+            .map { ApiResponse.success(it) }
+    }
+
+    @GetMapping("/genres")
+    fun getGenres(): Mono<ApiResponse<List<Genre>>> {
+        return animationService.getGenres()
+            .collectList()
+            .map { ApiResponse.success(it) }
+    }
+
     @GetMapping("/rankings")
     fun getAnimationRankings(
         @RequestParam type: RankingType
@@ -39,11 +60,16 @@ class AnimationController(
 
     @GetMapping("/weekly")
     fun getWeeklyAnimations(
-        @RequestParam(required = false) airDay: String?
-    ): Mono<ApiResponse<List<AnimationListResponse>>> {
-        return animationService.getWeeklyAnimations(airDay)
-            .collectList()
-            .map { ApiResponse.success(it) }
+        @RequestParam(required = false) airDay: AirDay?
+    ): Mono<ApiResponse<out Any>> {
+        return if (airDay != null) {
+            animationService.getAnimationsByAirDay(airDay)
+                .collectList()
+                .map { ApiResponse.success(it) }
+        } else {
+            animationService.getWeeklyAnimations()
+                .map { ApiResponse.success(it) }
+        }
     }
 
     @GetMapping("/{animationId}")

@@ -2,17 +2,17 @@ package com.ensnif.lanime.domain.animation.dto.response
 
 data class AnimationReviewRatingsResponse(
     val averageRating: Double,
-    val ratingCounts: List<RatingCount>,
-    val reviews: List<Review>,
+    val ratingCounts: List<RatingCountItemResponse>,
+    val reviews: List<ReviewItemResponse>,
     val totalCount: Long
 )
 
-data class RatingCount(
+data class RatingCountItemResponse(
     val rating: Double,
     val count: Long
 )
 
-data class Review(
+data class ReviewItemResponse(
     val reviewId: String,
     val profileId: String,
     val rating: Double,

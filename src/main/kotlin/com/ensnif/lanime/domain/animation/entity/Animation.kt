@@ -15,6 +15,6 @@ data class Animation(
     val thumbnailUrl: String?,
     val rating: String,
     val status: String,
-    val airDay: String?,
+    val airDay: AirDay?,
     val releasedAt: LocalDate?
 ) : BaseEntity()
