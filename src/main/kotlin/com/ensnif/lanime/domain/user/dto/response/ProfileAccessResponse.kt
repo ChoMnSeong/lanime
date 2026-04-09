@@ -1,6 +1,7 @@
 package com.ensnif.lanime.domain.user.dto.response
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
  * 프로필 선택 및 PIN 검증 결과를 담는 응답 DTO
@@ -12,7 +13,7 @@ data class ProfileAccessResponse(
      * true: 클라이언트에서 PIN 입력 모달을 띄워야 함
      * false: PIN이 없거나 검증에 성공했으므로 즉시 진입 가능
      */
-    val isPasswordRequired: Boolean,
+    @JsonProperty("isPasswordRequired") val isPasswordRequired: Boolean,
 
     /**
      * 프로필 전용 영구 토큰
