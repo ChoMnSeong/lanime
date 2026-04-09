@@ -1,6 +1,7 @@
 package com.ensnif.lanime.domain.user.entity
 
 import com.ensnif.lanime.global.common.entity.BaseEntity
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.util.UUID
@@ -12,5 +13,6 @@ data class UserProfile(
     val pin: String? = null,
     val name: String,
     val avatarUrl: String? = null,
-    val isOwner: Boolean = false
+    @JsonProperty("isOwner") val isOwner: Boolean = false,
+    val age: Int? = null
 ) : BaseEntity()

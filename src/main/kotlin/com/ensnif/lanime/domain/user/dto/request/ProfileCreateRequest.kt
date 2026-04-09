@@ -3,6 +3,8 @@ package com.ensnif.lanime.domain.user.dto.request
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.Max
 
 /**
  * 프로필 PIN 검증 요청 DTO
@@ -19,4 +21,8 @@ data class ProfileCreateRequest(
     @field:NotBlank(message = "닉네임은 필수입니다.")
     @field:Size(min = 2, max = 10, message = "닉네임은 2자 이상 10자 이하로 입력해주세요.")
     val nickname: String,
+
+    @field:Min(value = 1, message = "나이는 1 이상이어야 합니다.")
+    @field:Max(value = 150, message = "나이는 150 이하여야 합니다.")
+    val age: Int? = null,
 )
