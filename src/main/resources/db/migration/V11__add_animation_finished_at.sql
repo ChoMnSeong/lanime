@@ -1,0 +1,1 @@
+ALTER TABLE animation ADD COLUMN IF NOT EXISTS finished_at DATE;

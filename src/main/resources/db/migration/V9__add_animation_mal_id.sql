@@ -1,0 +1,1 @@
+ALTER TABLE animation ADD COLUMN mal_id INT UNIQUE;
