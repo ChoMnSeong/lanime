@@ -1,4 +1,4 @@
-package com.ensnif.lanime.domain.social.entity
+package com.ensnif.lanime.domain.interaction.entity
 
 import com.ensnif.lanime.global.common.entity.BaseEntity
 import org.springframework.data.annotation.Id
