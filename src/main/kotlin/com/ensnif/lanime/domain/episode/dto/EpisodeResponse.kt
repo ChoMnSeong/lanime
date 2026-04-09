@@ -1,6 +1,7 @@
 package com.ensnif.lanime.domain.episode.dto
 
 import com.ensnif.lanime.domain.episode.entity.EncodingStatus
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.UUID
 
 data class EpisodeResponse(
@@ -14,5 +15,5 @@ data class EpisodeResponse(
     val hlsPath: String?,
     val encodingStatus: EncodingStatus,
     val lastWatchedSecond: Int = 0,
-    val isFinished: Boolean = false
+    @JsonProperty("isFinished") val isFinished: Boolean = false
 )

@@ -15,14 +15,14 @@ class EpisodeService(
     private val episodeRepository: EpisodeRepository
 ) {
 
-    fun getEpisodes(animationId: UUID, profileId: UUID?): Mono<List<EpisodeResponse>> {
+    fun getEpisodes(animationId: UUID, profileId: UUID?, locale: String = "ja"): Mono<List<EpisodeResponse>> {
         return animationRepository.findById(animationId)
             .switchIfEmpty(Mono.error(BusinessException(ErrorCode.ANIMATION_NOT_FOUND)))
             .flatMap {
                 val rows = if (profileId != null) {
-                    episodeRepository.findAllByAnimationIdWithWatchHistory(animationId, profileId)
+                    episodeRepository.findAllByAnimationIdWithWatchHistory(animationId, profileId, locale)
                 } else {
-                    episodeRepository.findAllByAnimationId(animationId)
+                    episodeRepository.findAllByAnimationId(animationId, locale)
                 }
                 rows.collectList()
             }
