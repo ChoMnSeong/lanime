@@ -1,6 +1,7 @@
 package com.ensnif.lanime.domain.admin.dto.request
 
 import com.ensnif.lanime.domain.animation.entity.AirDay
+import com.ensnif.lanime.domain.animation.entity.AnimationStatus
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
@@ -12,7 +13,7 @@ data class CreateAnimationRequest(
     val description: String?,
     val thumbnailUrl: String?,
     @field:NotBlank val rating: String,   // ALL, 15, 19
-    @field:NotBlank val status: String, 
+    @field:NotNull val status: AnimationStatus,
     val airDay: AirDay?,
     val releasedAt: LocalDate?,
     val genreIds: List<UUID> = emptyList()
