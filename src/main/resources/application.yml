@@ -24,11 +24,7 @@ spring:
       mode: never
 
   flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    baseline-version: 0
-    clean-disabled: false  # create 모드에서 clean() 허용
+    enabled: false  # FlywayConfig에서 직접 제어
 
   # 메일 서버 설정 (Gmail SMTP)
   mail:

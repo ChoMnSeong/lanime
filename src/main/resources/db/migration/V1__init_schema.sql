@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS animation (
     thumbnail_url TEXT,
     rating VARCHAR(20), -- ALL, 15, 19
     status VARCHAR(20), -- ONGOING, FINISHED
-    air_day VARCHAR(15), -- Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+    air_day VARCHAR(15), -- SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
     released_at DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
