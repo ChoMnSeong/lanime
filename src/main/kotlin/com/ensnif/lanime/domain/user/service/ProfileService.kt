@@ -51,13 +51,14 @@ class ProfileService(
     @Transactional
     fun createProfile(email: String, request: ProfileCreateRequest): Mono<Unit> {
         return userRepository.findByEmail(email) // 1. 유저 찾기 (Mono<User>)
-            .flatMap { user -> 
+            .flatMap { user ->
 
                 userProfileRepository.save(UserProfile(
                     userId = user.userId!!,
                     name = request.nickname,
                     avatarUrl = request.avatarUrl,
-                    pin = request.pin?.let { passwordEncoder.encode(it) }
+                    pin = request.pin?.let { passwordEncoder.encode(it) },
+                    age = request.age
                 ))
             }.thenReturn(Unit)
     }
@@ -87,7 +88,8 @@ class ProfileService(
                             request.pin == null -> profile.pin
                             request.pin.isBlank() -> null
                             else -> passwordEncoder.encode(request.pin)
-                        }
+                        },
+                        age = request.age ?: profile.age
                     ).apply { createdAt = profile.createdAt }
                 )
             }
