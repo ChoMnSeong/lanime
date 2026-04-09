@@ -1,5 +1,8 @@
 package com.ensnif.lanime.domain.animation.dto.response
 
+import com.ensnif.lanime.domain.animation.entity.AnimationStatus
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class AnimationDetailResponse(
     val id: String,
     val title: String,
@@ -8,5 +11,6 @@ data class AnimationDetailResponse(
     val type: String,
     val genres: List<String>,
     val ageRating: String,
-    val status: String
+    val status: AnimationStatus,
+    @JsonProperty("isFavorite") val isFavorite: Boolean = false
 )

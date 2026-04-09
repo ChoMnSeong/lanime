@@ -8,5 +8,6 @@ data class AnimationRankingResponse(
     val type: String,
     val ageRating: String,
     val averageScore: Double,
-    val reviewCount: Long
+    val reviewCount: Long,
+    val watchCount: Long
 )
