@@ -3,6 +3,7 @@ package com.ensnif.lanime.domain.animation.controller
 import com.ensnif.lanime.domain.animation.dto.request.*
 import com.ensnif.lanime.domain.animation.dto.response.*
 import com.ensnif.lanime.domain.animation.entity.AirDay
+import com.ensnif.lanime.domain.animation.entity.AnimationStatus
 import com.ensnif.lanime.domain.animation.entity.AnimationType
 import com.ensnif.lanime.domain.animation.entity.Genre
 import com.ensnif.lanime.domain.animation.entity.RankingType
@@ -14,6 +15,7 @@ import com.ensnif.lanime.global.common.dto.ApiResponse
 import com.ensnif.lanime.global.context.UserProfileContext
 import com.ensnif.lanime.global.exception.BusinessException
 import com.ensnif.lanime.global.exception.ErrorCode
+import com.ensnif.lanime.global.util.LocaleUtils
 import jakarta.validation.Valid
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -29,8 +31,20 @@ class AnimationController(
 ) {
 
     @GetMapping
-    fun getAllAnimations(): Mono<ApiResponse<List<AnimationListResponse>>> {
-        return animationService.getAllAnimations()
+    fun getAllAnimations(
+        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String?,
+        @RequestParam(required = false) query: String?,
+        @RequestParam(required = false) typeIds: List<UUID>?,
+        @RequestParam(required = false) status: AnimationStatus?,
+        @RequestParam(required = false) genreIds: List<UUID>?,
+        @RequestParam(required = false) startYear: Int?,
+        @RequestParam(required = false) endYear: Int?,
+        @RequestParam(required = false) userAge: Int?,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "30") limit: Int
+    ): Mono<ApiResponse<List<AnimationListResponse>>> {
+        val locale = LocaleUtils.parse(acceptLanguage)
+        return animationService.getAllAnimations(query, typeIds, status, genreIds, startYear, endYear, userAge, page, limit, locale)
             .collectList()
             .map { ApiResponse.success(it) }
     }
@@ -51,32 +65,41 @@ class AnimationController(
 
     @GetMapping("/rankings")
     fun getAnimationRankings(
-        @RequestParam type: RankingType
+        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String?,
+        @RequestParam type: RankingType,
+        @RequestParam(required = false) userAge: Int?
     ): Mono<ApiResponse<List<AnimationRankingResponse>>> {
-        return animationService.getAnimationRankings(type)
+        val locale = LocaleUtils.parse(acceptLanguage)
+        return animationService.getAnimationRankings(type, userAge, locale)
             .collectList()
             .map { ApiResponse.success(it) }
     }
 
     @GetMapping("/weekly")
     fun getWeeklyAnimations(
-        @RequestParam(required = false) airDay: AirDay?
+        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String?,
+        @RequestParam(required = false) airDay: AirDay?,
+        @RequestParam(required = false) userAge: Int?
     ): Mono<ApiResponse<out Any>> {
+        val locale = LocaleUtils.parse(acceptLanguage)
         return if (airDay != null) {
-            animationService.getAnimationsByAirDay(airDay)
+            animationService.getAnimationsByAirDay(airDay, userAge, locale)
                 .collectList()
                 .map { ApiResponse.success(it) }
         } else {
-            animationService.getWeeklyAnimations()
+            animationService.getWeeklyAnimations(userAge, locale)
                 .map { ApiResponse.success(it) }
         }
     }
 
     @GetMapping("/{animationId}")
     fun getAnimationDetail(
-        @PathVariable animationId: UUID
+        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String?,
+        @PathVariable animationId: UUID,
+        @AuthenticationPrincipal context: UserProfileContext?
     ): Mono<ApiResponse<AnimationDetailResponse>> {
-        return animationService.getAnimationDetail(animationId)
+        val locale = LocaleUtils.parse(acceptLanguage)
+        return animationService.getAnimationDetail(animationId, context?.profileId, locale)
             .map { ApiResponse.success(it) }
     }
 
@@ -94,10 +117,27 @@ class AnimationController(
 
     @GetMapping("/{animationId}/episodes")
     fun getEpisodes(
+        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String?,
         @PathVariable animationId: UUID,
         @AuthenticationPrincipal context: UserProfileContext?
     ): Mono<ApiResponse<List<EpisodeResponse>>> {
-        return episodeService.getEpisodes(animationId, context?.profileId)
+        val locale = LocaleUtils.parse(acceptLanguage)
+        return episodeService.getEpisodes(animationId, context?.profileId, locale)
+            .map { ApiResponse.success(it) }
+    }
+
+    @GetMapping("/{animationId}/similar")
+    fun getSimilarAnimations(
+        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String?,
+        @PathVariable animationId: UUID,
+        @RequestParam(required = false, defaultValue = "50") matchPercentage: Int,
+        @RequestParam(required = false) userAge: Int?,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") limit: Int
+    ): Mono<ApiResponse<List<AnimationListResponse>>> {
+        val locale = LocaleUtils.parse(acceptLanguage)
+        return animationService.getSimilarAnimations(animationId, matchPercentage, userAge, locale, page, limit)
+            .collectList()
             .map { ApiResponse.success(it) }
     }
 
